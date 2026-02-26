@@ -18,7 +18,7 @@ const user = authStore.getUser
         <img
           :src="layoutStore.logoUrl"
           class="rounded h-[7vh] w-[25vh] object-cover"
-        />
+        >
         <!-- <h3 class="font-bold">
           {{ layoutStore.websiteTitle }}
         </h3> -->

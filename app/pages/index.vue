@@ -34,16 +34,20 @@ const landingStore = useLandingStore()
       <h2 class="text-center">
         Pricing Plans
       </h2>
-      <UTabs :items="landingStore.pricingTabs" orientation="horizontal" class="w-full flex gap-16 p-4">
-        <template #matriculation="{ item }">
-           <UPricingPlans
+      <UTabs
+        :items="landingStore.pricingTabs"
+        orientation="horizontal"
+        class="w-full flex gap-16 p-4"
+      >
+        <template #matriculation>
+          <UPricingPlans
             orientation="horizontal"
             :plans="landingStore.matriculationPlans"
             class="w-full"
           />
         </template>
-        <template #intermediate="{ item }">
-           <UPricingPlans
+        <template #intermediate>
+          <UPricingPlans
             orientation="horizontal"
             :plans="landingStore.intermediatePlans"
             class="w-full"
@@ -54,7 +58,6 @@ const landingStore = useLandingStore()
           :plans="landingStore.plans"
           class="w-full"
         /> -->
-
       </UTabs>
     </section>
 
@@ -67,7 +70,7 @@ const landingStore = useLandingStore()
         description="Secure your place in our upcoming sessions today."
         :links="landingStore.ctaLinks"
         class="w-full lg:w-fit"
-        variant='naked'
+        variant="naked"
       />
     </section>
   </UContainer>

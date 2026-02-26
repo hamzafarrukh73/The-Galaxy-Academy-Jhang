@@ -63,7 +63,7 @@ export const useLandingStore = defineStore('landingStore', () => {
         label: 'Register Now',
         to: URLS.auth.registration.home
       }
-    },{
+    }, {
       title: 'Science Only',
       price: 'Rs. 2800',
       billingCycle: '/month',
@@ -113,14 +113,14 @@ export const useLandingStore = defineStore('landingStore', () => {
         label: 'Register Now',
         to: URLS.auth.registration.home
       }
-    },{
+    }, {
       title: 'Science Only',
       price: 'Rs. 3000',
       billingCycle: '/month',
       features: [
         'Physics',
         'Mathematics/Biology',
-        'Computer Science/Chemistry',
+        'Computer Science/Chemistry'
       ],
       button: {
         label: 'Register Now',
@@ -138,7 +138,7 @@ export const useLandingStore = defineStore('landingStore', () => {
         'Islamiat',
         'Physics',
         'Mathematics/Biology',
-        'Computer Science/Chemistry',
+        'Computer Science/Chemistry'
       ],
       button: {
         label: 'Register Now',
