@@ -1,0 +1,38 @@
+{
+  "name": "nuxt-starter",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "lint": "eslint .",
+    "typecheck": "nuxt typecheck",
+    "generate:types": "openapi-typescript \"schema.yaml\" -o \"app/api/types.ts\"",
+    "prepare": "husky install"
+  },
+  "dependencies": {
+    "@iconify-json/lucide": "^1.2.94",
+    "@iconify-json/simple-icons": "^1.2.71",
+    "@nuxt/ui": "^4.5.0",
+    "@pinia/nuxt": "^0.11.3",
+    "nuxt": "^4.3.1",
+    "tailwindcss": "^4.2.1",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@nuxt/eslint": "^1.15.2",
+    "eslint": "^9.39.3",
+    "husky": "^8.0.0",
+    "lint-staged": "^16.2.7",
+    "openapi-typescript": "^7.13.0",
+    "typescript": "^5.9.3",
+    "vue-tsc": "^3.2.5"
+  },
+  "lint-staged": {
+    "*.{js,ts,vue}": [
+      "eslint --fix"
+    ]
+  }
+}

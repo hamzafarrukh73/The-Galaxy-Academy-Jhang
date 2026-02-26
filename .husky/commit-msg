@@ -1,0 +1,10 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Check commit message format (optional)
+# Enforce conventional commits: feat:, fix:, docs:, style:, test:, chore:, perf:, etc.
+if ! head -1 "$1" | grep -qE '(feat|fix|docs|style|test|chore|perf|refactor|ci|revert)(\(.+\))?!?:'; then
+  echo "❌ Commit message must follow conventional commits format"
+  echo "Example: 'feat: add new feature' or 'fix(auth): resolve login issue'"
+  exit 1
+fi

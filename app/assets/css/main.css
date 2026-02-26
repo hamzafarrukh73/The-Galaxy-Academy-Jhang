@@ -1,0 +1,125 @@
+@import 'tailwindcss';
+@import '@nuxt/ui';
+
+/* @theme {
+    --*: initial;
+    --color-*: initial;
+    --text-*: initial;
+
+    --spacing: 0.25rem;
+} */
+
+:root {
+  /* --ui-bg: var(--color-white);
+
+    --ui-primary: var(--ui-color-primary-600);
+    --ui-secondary: var(--ui-color-secondary-400);
+
+    --ui-success: var(--ui-color-success-500);
+    --ui-info: var(--ui-color-info-500);
+    --ui-warning: var(--ui-color-warning-500);
+    --ui-error: var(--ui-color-error); */
+
+  /* --ui-header-height: 10vh; */
+  --ui-container: 100%;
+  --ui-footer-height: var(--ui-header-height);
+  font-size: clamp(0.75rem, 0.5rem + 0.5vw, 1.5rem);
+  /* overflow-x: hidden; */
+  /* overflow-y: auto; */
+}
+
+/* .dark {
+    --ui-bg: var(--color-black);
+
+    --ui-primary: var(--ui-color-primary-600);
+    --ui-secondary: var(--ui-color-secondary-500);
+
+    --ui-success: var(--ui-color-success-400);
+    --ui-info: var(--ui-color-info-400);
+    --ui-warning: var(--ui-color-warning-400);
+    --ui-error: var(--ui-color-error-400);
+} */
+
+/* body {
+    font-family: var(--font-family-sans-serif);
+    @apply antialiased bg-black text-default scheme-dark dark:scheme-light;
+} */
+
+/* #__nuxt {
+    display: flex;
+    box-sizing: border-box;
+    overflow: auto;
+    background-color: transparent;
+} */
+/* h1, h2, h3, h4, h5, h6, p, b, span, td, .btn, label {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+} */
+
+/* h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+label,
+div,
+th {
+  @apply text-neutral-700 dark:text-neutral-300;
+} */
+h1 {
+  @apply text-5xl font-bold;
+}
+
+h2 {
+  @apply text-4xl font-bold;
+}
+
+h3 {
+  @apply text-3xl font-bold;
+}
+
+h4 {
+  @apply text-3xl font-semibold;
+}
+
+h5 {
+  @apply text-2xl font-semibold;
+}
+
+h6 {
+  @apply text-xl font-light;
+}
+
+p,
+label,
+span {
+  @apply text-base;
+}
+
+img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+::-webkit-scrollbar {
+  width: 0.5rem;
+  height: 0.5rem;
+  background-color: transparent;
+  z-index: 100;
+}
+
+::-webkit-scrollbar-track {
+  background-color: var(--color-neutral-500);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-neutral-800);
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
