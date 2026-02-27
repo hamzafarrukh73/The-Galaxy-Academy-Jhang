@@ -158,7 +158,7 @@ export const useLandingStore = defineStore('landingStore', () => {
       icon: ICONS.nav.contact,
       variant: 'soft',
       size: 'xl',
-      to: 'https://wa.me/923147864828',
+      to: 'https://web.whatsapp.com/send/?phone=923147864828&text&type=phone_number&app_absent=0',
       target: '_blank'
     }
 

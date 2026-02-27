@@ -6,7 +6,6 @@ const user = authStore.getUser
 </script>
 
 <template>
-  <!-- <div class="min-h-screen w-screen grid grid-rows-[auto_1fr_auto]"> -->
   <div class="min-h-screen w-full flex flex-col">
     <UHeader
       mode="slideover"
@@ -16,7 +15,7 @@ const user = authStore.getUser
     >
       <template #title>
         <img
-          :src="layoutStore.logoUrl"
+          :src="IMAGES.logo"
           class="rounded h-[7vh] w-[25vh] object-cover"
         >
         <!-- <h3 class="font-bold">
@@ -36,7 +35,7 @@ const user = authStore.getUser
 
       <template #right>
         <div
-          v-if="authStore.isAuthenticated"
+          v-if="authStore.validateSession()"
           class="flex items-center gap-2"
         >
           <UButton
@@ -138,9 +137,6 @@ const user = authStore.getUser
 
     <UMain>
       <slot />
-      <!-- <div class="absolute bottom-[15%] right-[5%]">
-        <UButton icon="i-simple-icons-whatsapp"  class="rounded-full" size="xl" variant="soft" color="neutral" />
-      </div> -->
     </UMain>
 
     <UFooter>

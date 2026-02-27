@@ -5,7 +5,6 @@ import type { NavigationMenuItem, DropdownMenuItem } from '@nuxt/ui'
 export const useLayoutStore = defineStore('layoutStore', () => {
   // --- STATE ---
   const websiteTitle = ref('The Galaxy Academy Jhang')
-  const logoUrl = ref('/_nuxt/assets/images/logo.png')
   const navMenu = ref<NavigationMenuItem[]>([
     { icon: ICONS.nav.home, label: 'Home', to: URLS.home, exactHash: true },
     { icon: ICONS.nav.benefits, label: 'Benefits', to: URLS.benefits, exactHash: true },
@@ -51,14 +50,13 @@ export const useLayoutStore = defineStore('layoutStore', () => {
       icon: ICONS.nav.logout,
       label: 'Logout',
       color: 'error',
-      onClick: useAuthStore().logout
+      onClick: () => useAuthStore().logout()
     }
   ])
 
   // --- EXPOSE ---
   return {
     websiteTitle,
-    logoUrl,
     navMenu,
     dashboardMenu,
     profileMenu

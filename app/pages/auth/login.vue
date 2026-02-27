@@ -49,6 +49,7 @@ function onSubmit(payload: FormSubmitEvent<Schema>) {
         :providers="providers"
         title="Login"
         :icon="ICONS.nav.user"
+        :loading-auto="true"
         @submit.prevent="onSubmit"
       >
         <template #description>

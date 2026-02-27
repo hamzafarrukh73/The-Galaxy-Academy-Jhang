@@ -7,7 +7,7 @@ useHead({
   }
 })
 
-const title = 'Nuxt Base'
+const title = 'The Galaxy Academy Jhang'
 const description = ''
 
 useSeoMeta({
@@ -25,7 +25,7 @@ const toaster = { position: 'top-center', duration: 2000 } as const
 
 <template>
   <UApp :toaster="toaster">
-    <!-- <NuxtLoadingIndicator /> -->
+    <NuxtLoadingIndicator />
     <BgGlow />
     <NuxtLayout>
       <NuxtPage />

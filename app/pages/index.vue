@@ -63,7 +63,7 @@ const landingStore = useLandingStore()
 
     <section
       id="get-started"
-      class="flex justify-center items-center min-h-[90vh] py-16"
+      class="flex justify-center items-center min-h-[60vh] py-16"
     >
       <UPageCTA
         title="Ready to Learn?"

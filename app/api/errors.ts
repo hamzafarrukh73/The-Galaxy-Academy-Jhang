@@ -129,9 +129,10 @@ export function formatErrorForToast(error: ApiError): {
   if (error instanceof ValidationError) {
     return {
       title: 'Validation Error',
-      description: Object.entries(error.fields)
-        .map(([field, msg]) => `${field}: ${msg}`)
-        .join('\n'),
+      // description: Object.entries(error.fields)
+      //   .map(([field, msg]) => `${field}: ${msg}`)
+      //   .join('\n'),
+      description: error.message,
       color: 'error'
     }
   }
