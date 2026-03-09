@@ -5,7 +5,7 @@
 
 export const EXTERNAL_URLS = {
   social: {
-    whatsapp: 'whatsapp://send?phone=923147864828',
+    whatsapp: 'whatsapp://send?phone=923326283024',
     google: {
       auth: 'https://accounts.google.com/o/oauth2/v2/auth'
     }
