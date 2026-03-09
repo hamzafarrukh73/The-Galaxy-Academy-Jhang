@@ -1,6 +1,8 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: ['@nuxt/eslint', '@nuxt/ui', '@pinia/nuxt'],
+  modules: ['@nuxt/eslint', '@nuxt/ui', '@pinia/nuxt', '@nuxtjs/supabase'],
+
+  ssr: false,
 
   devtools: {
     enabled: false
@@ -18,18 +20,15 @@ export default defineNuxtConfig({
   },
 
   css: ['~/assets/css/main.css'],
-
-  runtimeConfig: {
-    public: {
-      apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://127.0.0.1:8000'
-    }
+  colorMode: {
+    preference: 'dark'
   },
 
   routeRules: {
     '/': { prerender: true }
   },
 
-  compatibilityDate: '2025-01-15',
+  compatibilityDate: '2026-02-27',
 
   eslint: {
     config: {
@@ -38,5 +37,19 @@ export default defineNuxtConfig({
         braceStyle: '1tbs'
       }
     }
+  },
+
+  supabase: {
+    redirect: false
+    // redirectOptions: {
+    //   login: URLS.auth.login,
+    //   callback: URLS.auth.confirm,
+    //   exclude: [
+    //     URLS.home,
+    //     URLS.landing.hero,
+    //     URLS.auth.resetPassword,
+    //     URLS.auth.registration.home
+    //   ]
+    // }
   }
 })

@@ -1,8 +1,6 @@
 <script setup lang="ts">
 const authStore = useAuthStore()
 const layoutStore = useLayoutStore()
-
-const user = authStore.getUser
 </script>
 
 <template>
@@ -35,7 +33,7 @@ const user = authStore.getUser
 
       <template #right>
         <div
-          v-if="authStore.validateSession()"
+          v-if="authStore.isAuthenticated"
           class="flex items-center gap-2"
         >
           <UButton
@@ -61,7 +59,7 @@ const user = authStore.getUser
           >
             <UButton
               :avatar="{
-                src: user.image_url,
+                src: authStore.user?.avatarUrl,
                 icon: ICONS.nav.user,
                 size: 'sm'
               }"
@@ -76,24 +74,15 @@ const user = authStore.getUser
                 size="xl"
               >
                 <UUser
-                  :name="user.username"
-                  :description="user.role"
+                  :name="authStore.user?.email"
+                  :description="authStore.user?.role"
                   :avatar="{
-                    src: user.image_url,
+                    src: authStore.user?.avatarUrl,
                     icon: ICONS.nav.user
                   }"
                   orientation="horizontal"
                   size="xl"
                 />
-              </div>
-            </template>
-            <template #utils>
-              <div class="w-full flex flex-row justify-between items-center">
-                <div class="flex items-center gap-3">
-                  <UIcon :name="ICONS.utils.quickAccess" />
-                  <span>Quick Access</span>
-                </div>
-                <UColorModeButton />
               </div>
             </template>
           </UDropdownMenu>

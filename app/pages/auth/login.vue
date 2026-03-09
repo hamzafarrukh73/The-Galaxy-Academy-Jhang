@@ -3,7 +3,7 @@ import * as z from 'zod'
 import type { FormSubmitEvent, AuthFormField } from '@nuxt/ui'
 
 definePageMeta({
-  layout: 'empty'
+  layout: 'minimal'
 })
 
 const authStore = useAuthStore()
@@ -25,18 +25,18 @@ const fields: AuthFormField[] = [{
 const providers = [{
   label: 'Google',
   icon: 'i-simple-icons-google',
-  link: 'auth/social'
+  onClick: () => authStore.socialGoogleLogin()
 }]
 
 const schema = z.object({
-  email: z.email('Invalid email'),
-  password: z.string('Password is required').min(8, 'Must be at least 8 characters')
+  email: z.string().email('Invalid email'),
+  password: z.string().min(8, 'Must be at least 8 characters')
 })
 
 type Schema = z.output<typeof schema>
 
 function onSubmit(payload: FormSubmitEvent<Schema>) {
-  authStore.login(payload.data, true)
+  authStore.login(payload.data)
 }
 </script>
 
@@ -49,8 +49,11 @@ function onSubmit(payload: FormSubmitEvent<Schema>) {
         :providers="providers"
         title="Login"
         :icon="ICONS.nav.user"
-        :loading-auto="true"
-        @submit.prevent="onSubmit"
+        loading-auto
+        :submit="{
+          label: 'Login'
+        }"
+        @submit="onSubmit"
       >
         <template #description>
           <p>

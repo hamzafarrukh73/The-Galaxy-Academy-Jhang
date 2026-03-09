@@ -15,12 +15,9 @@ useSeoMeta({
   description,
   ogTitle: title,
   ogDescription: description
-  //   ogImage: 'https://ui.nuxt.com/assets/templates/nuxt/starter-light.png',
-  //   twitterImage: 'https://ui.nuxt.com/assets/templates/nuxt/starter-light.png',
-  //   twitterCard: 'summary_large_image'
 })
 
-const toaster = { position: 'top-center', duration: 2000 } as const
+const toaster = { position: 'top-center', duration: 3000 } as const
 </script>
 
 <template>

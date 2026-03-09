@@ -1,28 +1,9 @@
 <script setup lang="ts">
-const authStore = useAuthStore()
 const layoutStore = useLayoutStore()
-
-// Check auth on layout mount
-onMounted(async () => {
-  if (!await authStore.validateSession()) {
-    authStore.logout()
-    await navigateTo(URLS.auth.login)
-  }
-})
 </script>
 
 <template>
-  <div
-    v-if="authStore.authCheckLoading"
-    class="flex items-center justify-center h-screen"
-  >
-    <div class="text-center">
-      <p class="text-lg font-semibold">
-        Loading...
-      </p>
-    </div>
-  </div>
-  <div v-else-if="authStore.isAuthenticated">
+  <div>
     <UDashboardGroup storage="cookie">
       <UDashboardSidebar
         collapsible
@@ -30,25 +11,16 @@ onMounted(async () => {
         class="rounded-r-xl bg-neutral-800/10 dark:bg-primary-300/5"
       >
         <template #header="{ collapsed }">
-          <UUser
+          <img
             v-if="!collapsed"
-            :avatar="{
-              src: '',
-              icon: ICONS.nav.user
-            }"
-          />
-        <!-- <h3
-          v-if="!collapsed"
-          class="text-start"
-        >
-          Website Name
-        </h3>
-        <h3
-          v-else
-          class="text-center"
-        >
-          WN
-        </h3> -->
+            :src="IMAGES.logo"
+            class="rounded h-[7vh] w-[25vh] object-cover"
+          >
+          <img
+            v-else
+            :src="IMAGES.logoCollapsed"
+            class="rounded h-[5vh] w-[5vh] object-cover"
+          >
         </template>
         <template #default="{ collapsed }">
           <UNavigationMenu
@@ -68,11 +40,6 @@ onMounted(async () => {
         </template>
         <template #footer="{ collapsed }">
           <div class="flex flex-col w-full gap-3">
-            <UFileUpload
-              label="Drop your image here"
-              description="SVG, PNG, JPG or GIF (max. 2MB)"
-              class="w-full"
-            />
             <UNavigationMenu
               :collapsed="collapsed"
               :items="layoutStore.dashboardMenu[1]"
@@ -134,25 +101,6 @@ onMounted(async () => {
         <template #footer />
       </UDashboardPanel>
     </UDashboardGroup>
-  </div>
-  <div
-    v-else
-    class="flex items-center justify-center h-screen"
-  >
-    <div class="text-center">
-      <p class="text-lg font-semibold">
-        Unauthorized
-      </p>
-      <p class="text-sm text-gray-500">
-        Please log in to access this page.
-      </p>
-      <UButton
-        :to="URLS.auth.login"
-        class="mt-4"
-      >
-        Login
-      </UButton>
-    </div>
   </div>
 </template>
 

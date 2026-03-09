@@ -1,4 +1,3 @@
-import { defineStore } from 'pinia'
 import type { PricingPlanProps, ButtonProps, TabsItem } from '@nuxt/ui'
 
 export const useLandingStore = defineStore('landingStore', () => {
@@ -6,15 +5,17 @@ export const useLandingStore = defineStore('landingStore', () => {
   const heroLinks = ref<ButtonProps[]>([
     {
       label: 'Get Started',
+      icon: ICONS.nav.getStarted,
       variant: 'solid',
       size: 'xl',
       to: URLS.auth.registration.home
     },
     {
       label: 'Learn More',
+      icon: ICONS.nav.learnMore,
       variant: 'soft',
       size: 'xl',
-      to: URLS.benefits
+      to: URLS.landing.benefits
     }
   ])
 
@@ -81,7 +82,7 @@ export const useLandingStore = defineStore('landingStore', () => {
       title: 'All Subjects',
       price: 'Rs. 4000',
       billingCycle: '/month',
-      discount: 'Rs. 2800',
+      discount: 'Rs. 3200',
       billingPeriod: '20% off',
       features: [
         'English',
@@ -158,7 +159,7 @@ export const useLandingStore = defineStore('landingStore', () => {
       icon: ICONS.nav.contact,
       variant: 'soft',
       size: 'xl',
-      to: 'https://web.whatsapp.com/send/?phone=923147864828&text&type=phone_number&app_absent=0',
+      to: EXTERNAL_URLS.social.whatsapp,
       target: '_blank'
     }
 

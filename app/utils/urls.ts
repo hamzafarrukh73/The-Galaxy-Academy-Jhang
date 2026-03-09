@@ -1,14 +1,19 @@
 export const URLS = {
-  home: '/#home',
-  benefits: '/#benefits',
-  pricing: '/#pricing',
-  getStarted: '/#get-started',
+  home: '/',
+  landing: {
+    hero: '/#home',
+    benefits: '/#benefits',
+    pricing: '/#pricing',
+    getStarted: '/#get-started'
+  },
   auth: {
     registration: {
       home: '/auth/registration',
       verifyEmail: '/auth/registration/verify-email'
     },
-    login: '/auth/login'
+    login: '/auth/login',
+    confirm: '/auth/confirm',
+    resetPassword: '/auth/reset-password'
   },
   users: {
     profile: '/users/me'
@@ -16,16 +21,5 @@ export const URLS = {
   dashboard: {
     home: '/dashboard',
     dummy: '/dashboard/dummy'
-  },
-  api: {
-    get base() {
-      const config = useRuntimeConfig()
-      return config.public.apiBase
-    },
-    get v1() {
-      const config = useRuntimeConfig()
-      return `${config.public.apiBase}/api/v1`
-    },
-    auth: '/auth/'
   }
 }

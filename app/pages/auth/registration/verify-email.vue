@@ -4,6 +4,7 @@ definePageMeta({
 })
 
 const authStore = useAuthStore()
+const layoutStore = useLayoutStore()
 const route = useRoute()
 const key = route.query.key as string || ''
 
@@ -19,6 +20,7 @@ const email = ref('')
   <UContainer class="w-full grid items-center">
     <UPageCard
       v-if="verify"
+      :loading="layoutStore.isLoading"
       class="w-full max-w-md mx-auto"
     />
     <UPageCard
@@ -35,6 +37,7 @@ const email = ref('')
         />
         <UButton
           label="Resend"
+          :loading="layoutStore.isLoading"
           @click="authStore.resendVerificationEmail(email)"
         />
       </div>

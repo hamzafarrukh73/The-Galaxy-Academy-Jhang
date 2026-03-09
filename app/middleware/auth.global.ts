@@ -1,47 +1,33 @@
-export default defineNuxtRouteMiddleware(async (to, _from) => {
-  const auth = useAuthStore()
-  const pageAuth = to.meta.auth || 'public'
-  const requiredRole = to.meta.requiredRole || 'guest'
-  const userRole = auth.user.role || 'guest'
-
+export default defineNuxtRouteMiddleware(async (to, from) => {
   const toast = useToast()
+  const authStore = useAuthStore()
 
-  // Validate current session - check token validity and user data consistency
-  if (!auth.validateSession()) {
-    // Session is invalid, clear any remaining auth data
-    auth.logout()
+  const pageAuth = to.meta.auth || 'public'
+  const requiredRole = to.meta.requiredRole || false
+  const userRole = authStore.user?.role || 'anonymous'
 
-    // If page requires authentication, redirect and show error
-    if (pageAuth !== 'public') {
-      toast.add({
-        title: 'Session Expired',
-        description: 'Please log in again to continue.',
-        color: 'error',
-        duration: 5000
-      })
-      return navigateTo(URLS.auth.login)
-    }
-  }
-
-  // Check if user is authenticated when page requires it
-  if (pageAuth !== 'public' && !auth.isAuthenticated) {
+  // If page requires authentication and user still not authenticated, redirect
+  if (pageAuth !== 'public' && !authStore.isAuthenticated) {
     toast.add({
-      title: 'Unauthenticated',
-      description: 'Please log in to access this page.',
+      title: 'Authentication Required',
+      description: 'Please log in to continue.',
       color: 'error',
-      duration: 5000
+      duration: 3000
     })
     return navigateTo(URLS.auth.login)
   }
 
+  // If no required role then pass role check
+  if (requiredRole === false) return
+
   // Check if user has required role
-  if (pageAuth === 'private' && auth.isAuthenticated && userRole !== requiredRole) {
+  if (userRole !== requiredRole) {
     toast.add({
-      title: 'Unauthorized',
-      description: 'You do not have the required permission to access this page.',
+      title: 'Access Denied',
+      description: 'You do not have the required permission to access this resource.',
       color: 'error',
-      duration: 5000
+      duration: 3000
     })
-    return navigateTo(URLS.home)
+    return navigateTo(from.path)
   }
 })

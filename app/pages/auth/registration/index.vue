@@ -3,10 +3,11 @@ import * as z from 'zod'
 import type { FormSubmitEvent, AuthFormField } from '@nuxt/ui'
 
 definePageMeta({
-  layout: 'empty'
+  layout: 'minimal'
 })
 
 const authStore = useAuthStore()
+const layoutStore = useLayoutStore()
 
 const fields: AuthFormField[] = [{
   name: 'email',
@@ -31,13 +32,13 @@ const fields: AuthFormField[] = [{
 const providers = [{
   label: 'Google',
   icon: 'i-simple-icons-google',
-  link: 'auth/social'
+  onClick: () => authStore.socialGoogleLogin()
 }]
 
 const schema = z.object({
-  email: z.email('Invalid email'),
-  password1: z.string('Password is required').min(8, 'Must be at least 8 characters'),
-  password2: z.string('Confirm Password is required').min(8, 'Must be at least 8 characters')
+  email: z.string().email('Invalid email'),
+  password1: z.string().min(8, 'Must be at least 8 characters'),
+  password2: z.string().min(8, 'Must be at least 8 characters')
 }).refine((data) => {
   return data.password1 === data.password2
 }, {
@@ -48,7 +49,7 @@ const schema = z.object({
 type Schema = z.output<typeof schema>
 
 function onSubmit(payload: FormSubmitEvent<Schema>) {
-  authStore.register(payload.data, true, URLS.auth.login)
+  authStore.register(payload.data, URLS.auth.login)
 }
 </script>
 
@@ -61,7 +62,11 @@ function onSubmit(payload: FormSubmitEvent<Schema>) {
         :providers="providers"
         title="Signup"
         :icon="ICONS.nav.user"
-        @submit.prevent="onSubmit"
+        :loading="layoutStore.isLoading"
+        :submit="{
+          label: 'Register'
+        }"
+        @submit="onSubmit"
       >
         <template #description>
           <p>

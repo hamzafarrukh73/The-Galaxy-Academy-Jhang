@@ -5,6 +5,7 @@ export const ICONS = {
     pricing: 'i-lucide-dollar-sign',
     contact: 'i-lucide-phone',
     getStarted: 'i-lucide-rocket',
+    learnMore: 'i-lucide-info',
     user: 'i-lucide-user',
     logout: 'i-lucide-log-out'
   },

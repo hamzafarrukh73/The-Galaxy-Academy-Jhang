@@ -22,7 +22,6 @@ const landingStore = useLandingStore()
     >
       <UPageSection
         title="We Provide"
-        description="A disciplined environment and guidance designed to help students master their curriculum."
         :features="landingStore.benefits"
       />
     </section>
