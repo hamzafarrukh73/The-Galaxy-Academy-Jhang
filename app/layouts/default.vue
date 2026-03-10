@@ -12,13 +12,7 @@ const layoutStore = useLayoutStore()
       :menu="{ side: 'right', class: 'w-full' }"
     >
       <template #title>
-        <img
-          :src="IMAGES.logo"
-          class="rounded h-[7vh] w-[25vh] object-cover"
-        >
-        <!-- <h3 class="font-bold">
-          {{ layoutStore.websiteTitle }}
-        </h3> -->
+        <AppLogo />
       </template>
 
       <template #default>
@@ -54,7 +48,7 @@ const layoutStore = useLayoutStore()
               side: 'bottom'
             }"
             :ui="{
-              content: 'w-[40vw] lg:w-[20vw]'
+              content: 'min-w-[40vw] lg:min-w-[20vw]'
             }"
           >
             <UButton

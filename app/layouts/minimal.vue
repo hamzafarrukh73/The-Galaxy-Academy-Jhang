@@ -10,13 +10,7 @@ const layoutStore = useLayoutStore()
       :toggle="false"
     >
       <template #title>
-        <img
-          :src="IMAGES.logoCollapsed"
-          class="rounded h-[7vh] w-[25vh]"
-        >
-        <h3 class="font-bold">
-          {{ layoutStore.websiteTitle }}
-        </h3>
+        <AppLogo />
       </template>
 
       <template #right>

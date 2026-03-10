@@ -11,16 +11,7 @@ const layoutStore = useLayoutStore()
         class="rounded-r-xl bg-neutral-800/10 dark:bg-primary-300/5"
       >
         <template #header="{ collapsed }">
-          <img
-            v-if="!collapsed"
-            :src="IMAGES.logo"
-            class="rounded h-[7vh] w-[25vh] object-cover"
-          >
-          <img
-            v-else
-            :src="IMAGES.logoCollapsed"
-            class="rounded h-[5vh] w-[5vh] object-cover"
-          >
+          <AppLogo :collapsed="collapsed" />
         </template>
         <template #default="{ collapsed }">
           <UNavigationMenu
@@ -70,9 +61,10 @@ const layoutStore = useLayoutStore()
               </div>
             </template>
             <template #title>
-              <h2 class="lg:hidden">
-                {{ layoutStore.websiteTitle }}
-              </h2>
+              <AppLogo
+                collapsed
+                class="lg:hidden"
+              />
             </template>
 
             <template #right>

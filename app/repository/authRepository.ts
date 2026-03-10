@@ -56,7 +56,7 @@ export class AuthRepository {
   }
 
   async resetPassword(email: string) {
-    const redirectTo = import.meta.client ? `${window.location.origin}${URLS.auth.confirm}` : ''
+    const redirectTo = import.meta.client ? `${window.location.origin}${URLS.auth.password.reset}` : ''
     return await this.request<null>(
       this.supabase.auth.resetPasswordForEmail(email, { redirectTo }) as unknown as PromiseLike<{ data: null, error: unknown }>
     )
@@ -70,7 +70,7 @@ export class AuthRepository {
   }
 
   async socialLogin(provider: 'google' | 'github') {
-    const redirectTo = import.meta.client ? `${window.location.origin}${URLS.auth.confirm}` : ''
+    const redirectTo = import.meta.client ? `${window.location.origin}${URLS.auth.login}` : ''
     // signInWithOAuth returns { provider, url }, not user/session
     return await this.request<{ provider: string, url: string | null }>(
       this.supabase.auth.signInWithOAuth({

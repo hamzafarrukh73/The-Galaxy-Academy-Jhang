@@ -15,29 +15,16 @@ const fields: AuthFormField[] = [{
   label: 'Email',
   placeholder: 'Enter your email',
   required: true
-}, {
-  name: 'password',
-  label: 'Password',
-  type: 'password',
-  placeholder: 'Enter your password',
-  required: true
-}]
-
-const providers = [{
-  label: 'Google',
-  icon: 'i-simple-icons-google',
-  onClick: () => authStore.socialGoogleLogin()
 }]
 
 const schema = z.object({
-  email: z.string().email('Invalid email'),
-  password: z.string().min(8, 'Must be at least 8 characters')
+  email: z.string().email('Invalid email')
 })
 
 type Schema = z.output<typeof schema>
 
 function onSubmit(payload: FormSubmitEvent<Schema>) {
-  authStore.login(payload.data)
+  authStore.resetPassword(payload.data.email)
 }
 </script>
 
@@ -47,34 +34,25 @@ function onSubmit(payload: FormSubmitEvent<Schema>) {
       <UAuthForm
         :schema="schema"
         :fields="fields"
-        :providers="providers"
-        title="Login"
+        title="Reset Password"
+        description="Enter your email to receive a password reset link."
         :icon="ICONS.nav.user"
         :loading="layoutStore.isLoading"
         :submit="{
-          label: 'Login'
+          label: 'Reset'
         }"
         @submit="onSubmit"
       >
-        <template #description>
-          <p>
-            Don't have an account?
+        <template #footer>
+          <p class="text-center text-sm">
+            Remember your password?
             <ULink
-              :to="URLS.auth.registration.home"
+              :to="URLS.auth.login"
               class="text-info font-medium"
             >
-              Register here
+              Login here
             </ULink>
           </p>
-        </template>
-        <template #password-hint>
-          <ULink
-            :to="URLS.auth.password.reset"
-            class="text-primary font-medium"
-            tabindex="-1"
-          >
-            Forgot password?
-          </ULink>
         </template>
       </UAuthForm>
     </UPageCard>

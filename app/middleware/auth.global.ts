@@ -6,6 +6,11 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   const requiredRole = to.meta.requiredRole || false
   const userRole = authStore.user?.role || 'anonymous'
 
+  // User is authenticated then block the auth pages
+  if (authStore.isAuthenticated && to.path.includes('auth')) {
+    return navigateTo(URLS.dashboard.home)
+  }
+
   // If page requires authentication and user still not authenticated, redirect
   if (pageAuth !== 'public' && !authStore.isAuthenticated) {
     toast.add({

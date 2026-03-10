@@ -6,7 +6,7 @@ const landingStore = useLandingStore()
   <UContainer>
     <section
       id="home"
-      class="flex justify-center items-center min-h-[90vh]"
+      class="flex justify-center items-center min-h-[90vh] scroll-mt-[15vh]"
     >
       <UPageHero
         title="Academic Institute"

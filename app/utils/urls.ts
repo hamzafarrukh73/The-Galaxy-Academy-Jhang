@@ -7,13 +7,15 @@ export const URLS = {
     getStarted: '/#get-started'
   },
   auth: {
+    login: '/auth/login',
     registration: {
       home: '/auth/registration',
       verifyEmail: '/auth/registration/verify-email'
     },
-    login: '/auth/login',
-    confirm: '/auth/confirm',
-    resetPassword: '/auth/reset-password'
+    password: {
+      reset: '/auth/password/reset',
+      change: '/auth/password/change'
+    }
   },
   users: {
     profile: '/users/me'
