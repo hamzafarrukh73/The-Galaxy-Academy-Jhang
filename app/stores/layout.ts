@@ -19,12 +19,20 @@ export const useLayoutStore = defineStore('layoutStore', () => {
     return [
       [{
         icon: ICONS.dashboard.home,
-        label: 'Dashboard',
+        label: 'Overview',
         to: URLS.dashboard.home
       }, {
-        icon: ICONS.dashboard.settings,
-        label: 'Dummy',
-        to: URLS.dashboard.dummy
+        icon: ICONS.dashboard.personal,
+        label: 'Personal',
+        to: URLS.dashboard.personal
+      }, {
+        icon: ICONS.dashboard.history,
+        label: 'Academic History',
+        to: URLS.dashboard.history
+      }, {
+        icon: ICONS.dashboard.interests,
+        label: 'Interests',
+        to: URLS.dashboard.interests
       }],
       [{
         icon: ICONS.nav.user,

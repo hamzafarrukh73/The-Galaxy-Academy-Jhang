@@ -14,7 +14,10 @@ export const ICONS = {
     google: 'i-simple-icons-google'
   },
   dashboard: {
-    home: 'i-lucide-laptop-minimal',
+    home: 'i-lucide-layout-dashboard',
+    personal: 'i-lucide-user',
+    history: 'i-lucide-graduation-cap',
+    interests: 'i-lucide-heart',
     settings: 'i-lucide-cog'
   },
   benefits: {

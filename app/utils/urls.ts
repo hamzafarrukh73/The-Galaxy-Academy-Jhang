@@ -22,6 +22,9 @@ export const URLS = {
   },
   dashboard: {
     home: '/dashboard',
+    personal: '/dashboard/personal',
+    history: '/dashboard/history',
+    interests: '/dashboard/interests',
     dummy: '/dashboard/dummy'
   }
 }
