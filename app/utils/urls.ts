@@ -4,7 +4,7 @@ export const URLS = {
     hero: '/#home',
     benefits: '/#benefits',
     pricing: '/#pricing',
-    getStarted: '/#get-started'
+    contact: '/#contact'
   },
   auth: {
     login: '/auth/login',
@@ -23,8 +23,8 @@ export const URLS = {
   dashboard: {
     home: '/dashboard',
     personal: '/dashboard/personal',
-    history: '/dashboard/history',
-    interests: '/dashboard/interests',
-    dummy: '/dashboard/dummy'
+    academic: '/dashboard/academic',
+    interests: '/dashboard/academic',
+    guardian: '/dashboard/guardian'
   }
 }

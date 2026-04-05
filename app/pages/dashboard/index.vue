@@ -1,189 +1,173 @@
 <script lang="ts" setup>
+/**
+ * Dashboard Overview
+ *
+ * Securely typed and live-synced profile summary.
+ * Uses strict patterns to navigate complex JSON database structures.
+ */
+import { storeToRefs } from 'pinia'
+
 definePageMeta({
   layout: 'dashboard',
-  auth: 'private'
+  auth: 'private',
+  navGroup: 'dashboard'
 })
 
+// Types
+interface SubjectScore {
+  name: string
+  liking: number
+}
+
+// Stores
 const authStore = useAuthStore()
+const profileStore = useProfileStore()
+const academicStore = useAcademicStore()
+const interestsStore = useInterestsStore()
+const guardianStore = useGuardianStore()
 
-// Mock data for now
-const profileCompletion = ref(75)
-const studentId = ref('GA-2024-001')
-const cnic = ref('33100-1234567-1')
+// Strictly destructure stores to avoid deep proxy type inference issues
+const { profile } = storeToRefs(profileStore)
+const { academic } = storeToRefs(academicStore)
+const { interests: interestsData } = storeToRefs(interestsStore)
+const { guardian } = storeToRefs(guardianStore)
 
-const academicInfo = {
-  board: 'FBISE',
-  group: 'Pre-Engineering',
-  currentClass: '12th',
-  previousSchool: 'City Public School'
+const printableProfileRef = ref<{ printProfile: () => void } | null>(null)
+
+// Data fetching
+const loadData = async () => {
+  await Promise.all([
+    profileStore.getProfile(),
+    academicStore.getAcademic(),
+    interestsStore.getInterests(),
+    guardianStore.getGuardian()
+  ])
 }
 
-const contactInfo = {
-  phone: '+92 300 1234567',
-  email: authStore.user?.email || 'student@galaxy.edu',
-  address: 'Housing Colony No. 1, Jhang'
-}
+onMounted(() => {
+  loadData()
+})
 
-const interests = {
-  aspiration: 'Software Engineer',
-  likes: 'Mathematics',
-  dislikes: 'Biology'
-}
+// Strictly typed profile completion calculation
+const profileCompletion = computed<number>(() => {
+  let totalFields = 0
+  let filledFields = 0
+
+  // Cast to Record<string, unknown> to avoid excessively deep instantiation
+  // without using 'any' (monkey patching). This is a standard strict way
+  // to access properties of complex generic objects.
+  const p = profile.value as Record<string, unknown>
+  const pFields = ['first_name', 'last_name', 'cnic', 'dob', 'gender', 'blood_group', 'address', 'city', 'province', 'avatar_url']
+
+  const a = academic.value as Record<string, unknown>
+  const aFields = ['current_school', 'current_class', 'current_group', 'current_medium']
+
+  const i = interestsData.value as Record<string, unknown>
+  const iFields = ['career_aspiration', 'hobby']
+
+  totalFields = pFields.length + aFields.length + iFields.length
+
+  pFields.forEach((f) => {
+    if (p[f]) filledFields++
+  })
+
+  aFields.forEach((f) => {
+    if (a[f]) filledFields++
+  })
+
+  iFields.forEach((f) => {
+    if (i[f]) filledFields++
+  })
+
+  return totalFields > 0 ? Math.round((filledFields / totalFields) * 100) : 0
+})
+
+const studentId = computed(() => academic.value.student_id)
+const cnic = computed(() => profile.value.cnic)
+
+const academicInfo = computed(() => ({
+  board: 'Not Recorded',
+  group: academic.value.current_group,
+  currentClass: academic.value.current_class,
+  previousSchool: academic.value.current_school
+}))
+
+const contactInfo = computed(() => ({
+  phone: guardian.value.phone,
+  email: authStore.user?.email,
+  address: `${profile.value.address || ''}, ${profile.value.city || ''}`
+}))
+
+// Strict handling of subject_ranking (Json type)
+const interests = computed(() => {
+  // Use Record<string, unknown> to access the ranking property without triggering type recursion
+  const i = interestsData.value as Record<string, unknown>
+  const rawRanking = i.subject_ranking
+
+  // Use a clear type-guarded cast to SubjectScore[]
+  const subjects = (Array.isArray(rawRanking) ? rawRanking : []) as unknown as SubjectScore[]
+  const sorted = [...subjects].sort((a, b) => b.liking - a.liking)
+
+  return {
+    aspiration: String(i.career_aspiration || 'N/A'),
+    likes: sorted[0]?.name || 'N/A',
+    dislikes: sorted[sorted.length - 1]?.name || 'N/A'
+  }
+})
 
 const downloadPdf = () => {
-  // Logic for PDF download
-  console.log('Downloading profile PDF...')
+  printableProfileRef.value?.printProfile()
 }
-
-const cardsVariant = 'soft'
 </script>
 
 <template>
   <UPage>
     <UPageHeader
-      :title="`Welcome, ${authStore.user?.first_name}!`"
+      title="Profile Completion"
+      :icon="ICONS.info.stats"
     >
-      <template #leading>
-        <UAvatar
-          :src="authStore.user?.avatarUrl"
-          :alt="authStore.user?.first_name"
-          size="lg"
-          icon="i-lucide-user"
-          class="ring-2 ring-offset-2 ring-offset-background"
+      <div class="flex gap-8 mt-8">
+        <UProgress
+          v-model="profileCompletion"
+          status
+          color="primary"
+          class="rounded-full"
         />
-      </template>
+        <UButton
+          label="Download"
+          :icon="ICONS.action.download"
+          size="xl"
+          :color="profileCompletion >= 80 ? 'primary' : 'neutral'"
+          :variant="profileCompletion >= 80 ? 'solid' : 'soft'"
+          :disabled="profileCompletion < 80"
+          class="rounded-xl"
+          @click="downloadPdf"
+        />
+      </div>
     </UPageHeader>
 
     <UPageBody>
       <UPageGrid>
-        <!-- Card 1: Profile Status & Reward (Tall Card) -->
-        <UPageCard
-          title="Profile Completion"
-          icon="i-lucide-activity"
-          :variant="cardsVariant"
-          class="lg:row-span-2 h-full"
-        >
-          <div class="flex flex-col h-full gap-6">
-            <div class="flex flex-col items-center gap-4">
-              <div class="flex w-full justify-between items-end">
-                <p class="font-bold text-dimmed uppercase">
-                  Progress
-                </p>
-                <p class="font-bold text-primary text-end">
-                  {{ profileCompletion }}%
-                </p>
-              </div>
-              <UProgress
-                v-model="profileCompletion"
-                color="primary"
-                class="rounded-full"
-              />
-              <p :class="['font-bold text-sm text-dimmed text-center', profileCompletion >= 90 ? 'text-success-600' : '']">
-                {{ profileCompletion >= 65 ? 'Profile Download Unlocked' : 'Unlock PDF by reaching 65%' }}
-              </p>
-              <UButton
-                label="Download Profile PDF"
-                icon="i-lucide-download"
-                size="xl"
-                block
-                :color="profileCompletion >= 65 ? 'primary' : 'neutral'"
-                :variant="profileCompletion >= 65 ? 'solid' : 'soft'"
-                :disabled="profileCompletion < 65"
-                class="rounded-xl font-bold"
-                @click="downloadPdf"
-              />
-            </div>
-
-            <div class="flex-grow flex flex-col gap-6">
-              <USeparator
-                label="Pending Actions"
-                class="opacity-50"
-              />
-
-              <div class="space-y-4">
-                <div class="flex items-start gap-3 p-3 rounded-xl bg-zinc-500/5 hover:bg-zinc-500/10 transition-colors">
-                  <div class="mt-1 p-1 rounded-md bg-warning-500/10">
-                    <UIcon
-                      name="i-lucide-alert-circle"
-                      class="w-4 h-4 text-warning-500"
-                    />
-                  </div>
-                  <div>
-                    <p class="text-xs font-bold">
-                      Identity Verification
-                    </p>
-                    <p class="text-[10px] text-dimmed">
-                      Upload CNIC Front/Back
-                    </p>
-                  </div>
-                </div>
-
-                <div class="flex items-start gap-3 p-3 rounded-xl bg-zinc-500/5 hover:bg-zinc-500/10 transition-colors">
-                  <div class="mt-1 p-1 rounded-md bg-info-500/10">
-                    <UIcon
-                      name="i-lucide-book-open"
-                      class="w-4 h-4 text-info-500"
-                    />
-                  </div>
-                  <div>
-                    <p class="text-xs font-bold">
-                      Academic Transcripts
-                    </p>
-                    <p class="text-[10px] text-dimmed">
-                      Grade 10 Marksheet required
-                    </p>
-                  </div>
-                </div>
-
-                <div class="flex items-start gap-3 p-3 rounded-xl bg-zinc-500/5 hover:bg-zinc-500/10 transition-colors">
-                  <div class="mt-1 p-1 rounded-md bg-primary-500/10">
-                    <UIcon
-                      name="i-lucide-check-circle-2"
-                      class="w-4 h-4 text-primary-500"
-                    />
-                  </div>
-                  <div>
-                    <p class="text-xs font-bold line-through opacity-50">
-                      Personal Details
-                    </p>
-                    <p class="text-[10px] text-dimmed">
-                      Completed successfully
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="mt-auto p-4 rounded-xl bg-primary-500/5 border border-primary-500/10">
-                <p class="text-[11px] text-center italic text-primary-600">
-                  "Complete 100% of your profile to qualify for early scholarship consideration."
-                </p>
-              </div>
-            </div>
-          </div>
-        </UPageCard>
-
-        <!-- Card 2: Basic Info -->
         <UPageCard
           title="Personal Information"
-          icon="i-lucide-user-circle"
-          :variant="cardsVariant"
-          class="h-full"
+          :icon="ICONS.nav.user"
+          class="lg:col-span-2 h-full"
         >
-          <div class="flex flex-col h-full space-y-4">
-            <div class="space-y-3 flex-grow">
-              <div class="flex justify-between items-center text-xs">
+          <div class="flex flex-col h-full gap-4">
+            <div class="space-y-3 grow">
+              <div class="flex flex-col justify-between items-start text-xs">
                 <p class="text-dimmed">
                   Name
                 </p>
-                <p class="text-right">
-                  {{ authStore.user?.user_metadata?.first_name || authStore.user?.first_name }} {{ authStore.user?.user_metadata?.last_name || '' }}
+                <p>
+                  {{ authStore.user?.first_name }} {{ authStore.user?.last_name || '' }}
                 </p>
               </div>
               <div class="flex justify-between items-center text-xs">
                 <p class="text-dimmed">
                   Student ID
                 </p>
-                <p class="text-right">
+                <p>
                   {{ studentId || 'N/A' }}
                 </p>
               </div>
@@ -202,7 +186,7 @@ const cardsVariant = 'soft'
               size="xl"
               color="primary"
               variant="soft"
-              to="/dashboard/personal"
+              :to="URLS.dashboard.personal"
               class="rounded-xl font-bold"
             />
           </div>
@@ -211,12 +195,11 @@ const cardsVariant = 'soft'
         <!-- Card 3: Contact Info -->
         <UPageCard
           title="Contact Information"
-          icon="i-lucide-contact"
-          :variant="cardsVariant"
+          :icon="ICONS.action.call"
           class="h-full"
         >
           <div class="flex flex-col h-full space-y-4">
-            <div class="space-y-3 flex-grow">
+            <div class="space-y-3 grow">
               <div class="flex justify-between items-center text-xs">
                 <p class="text-dimmed">
                   Mobile No.
@@ -254,7 +237,7 @@ const cardsVariant = 'soft'
               size="xl"
               color="primary"
               variant="soft"
-              to="/dashboard/personal"
+              :to="URLS.dashboard.personal"
               class="rounded-xl font-bold"
             />
           </div>
@@ -263,12 +246,11 @@ const cardsVariant = 'soft'
         <!-- Card 4: Academic Info -->
         <UPageCard
           title="Academic Info"
-          icon="i-lucide-graduation-cap"
-          :variant="cardsVariant"
+          :icon="ICONS.nav.education"
           class="h-full"
         >
           <div class="flex flex-col h-full space-y-4">
-            <div class="space-y-3 flex-grow">
+            <div class="space-y-3 grow">
               <div class="flex justify-between items-center text-xs">
                 <p class="text-dimmed">
                   Class
@@ -298,12 +280,12 @@ const cardsVariant = 'soft'
               </div>
             </div>
             <UButton
-              label="Add Marks / History"
+              label="Academic Records"
               block
               size="xl"
               color="primary"
               variant="soft"
-              to="/dashboard/history"
+              :to="URLS.dashboard.academic"
               class="rounded-xl font-bold"
             />
           </div>
@@ -312,12 +294,11 @@ const cardsVariant = 'soft'
         <!-- Card 5: Interests -->
         <UPageCard
           title="Interests & Goals"
-          icon="i-lucide-sparkles"
-          :variant="cardsVariant"
+          :icon="ICONS.nav.interests"
           class="h-full"
         >
           <div class="flex flex-col h-full space-y-4">
-            <div class="space-y-3 flex-grow">
+            <div class="space-y-3 grow">
               <div class="flex justify-between items-center text-xs">
                 <p class="text-dimmed">
                   Career Goals
@@ -355,13 +336,16 @@ const cardsVariant = 'soft'
               size="xl"
               color="primary"
               variant="soft"
-              to="/dashboard/interests"
+              :to="URLS.dashboard.academic"
               class="rounded-xl font-bold"
             />
           </div>
         </UPageCard>
       </UPageGrid>
     </UPageBody>
+
+    <!-- Printable Profile Component (Hidden) -->
+    <DashboardPrintableProfile ref="printableProfileRef" />
   </UPage>
 </template>
 

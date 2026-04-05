@@ -3,7 +3,7 @@ const layoutStore = useLayoutStore()
 </script>
 
 <template>
-  <div class="min-h-screen w-full flex flex-col">
+  <div class="flex flex-col min-h-screen w-full">
     <UHeader
       mode="slideover"
       :title="layoutStore.websiteTitle"
@@ -14,24 +14,14 @@ const layoutStore = useLayoutStore()
       </template>
 
       <template #right>
-        <div
-          class="flex items-center gap-1"
-        >
-          <UButton
-            label="Signup"
-            :to="URLS.auth.registration.home"
-            class="rounded-full rounded-r-none items-center px-4 lg:px-8"
-            color="primary"
-            variant="solid"
-          />
-          <UButton
-            label="Login"
-            :to="URLS.auth.login"
-            class="rounded-full rounded-l-none items-center px-4 lg:px-8"
-            color="primary"
-            variant="soft"
-          />
-        </div>
+        <UButton
+          label="Back to Home"
+          :icon="ICONS.nav.home"
+          :to="URLS.home"
+          class="items-center rounded"
+          color="neutral"
+          variant="soft"
+        />
       </template>
     </UHeader>
 
@@ -40,8 +30,8 @@ const layoutStore = useLayoutStore()
     </UMain>
 
     <UFooter>
-      <div class="flex gap-2 items-center justify-center">
-        <UIcon :name="ICONS.utils.copyright" />
+      <div class="flex items-center justify-center gap-2">
+        <UIcon :name="ICONS.info.copyright" />
         <p>{{ new Date().getFullYear() }} {{ layoutStore.websiteTitle }}. All rights reserved.</p>
       </div>
     </UFooter>

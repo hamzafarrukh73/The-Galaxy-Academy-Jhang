@@ -996,6 +996,100 @@ export type Database = {
         }
         Relationships: []
       }
+      webauthn_challenges: {
+        Row: {
+          challenge_type: string
+          created_at: string
+          expires_at: string
+          id: string
+          session_data: Json
+          user_id: string | null
+        }
+        Insert: {
+          challenge_type: string
+          created_at?: string
+          expires_at: string
+          id?: string
+          session_data: Json
+          user_id?: string | null
+        }
+        Update: {
+          challenge_type?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          session_data?: Json
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'webauthn_challenges_user_id_fkey'
+            columns: ['user_id']
+            isOneToOne: false
+            referencedRelation: 'users'
+            referencedColumns: ['id']
+          }
+        ]
+      }
+      webauthn_credentials: {
+        Row: {
+          aaguid: string | null
+          attestation_type: string
+          backed_up: boolean
+          backup_eligible: boolean
+          created_at: string
+          credential_id: string
+          friendly_name: string
+          id: string
+          last_used_at: string | null
+          public_key: string
+          sign_count: number
+          transports: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          aaguid?: string | null
+          attestation_type?: string
+          backed_up?: boolean
+          backup_eligible?: boolean
+          created_at?: string
+          credential_id: string
+          friendly_name?: string
+          id?: string
+          last_used_at?: string | null
+          public_key: string
+          sign_count?: number
+          transports?: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          aaguid?: string | null
+          attestation_type?: string
+          backed_up?: boolean
+          backup_eligible?: boolean
+          created_at?: string
+          credential_id?: string
+          friendly_name?: string
+          id?: string
+          last_used_at?: string | null
+          public_key?: string
+          sign_count?: number
+          transports?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'webauthn_credentials_user_id_fkey'
+            columns: ['user_id']
+            isOneToOne: false
+            referencedRelation: 'users'
+            referencedColumns: ['id']
+          }
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -1029,7 +1123,188 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      Academics: {
+        Row: {
+          achievements: string
+          created_at: string
+          current_class: string
+          current_group: string
+          current_medium: string
+          current_school: string
+          extra_interest: string
+          id: string
+          is_hafiz: boolean
+          is_volunteer: boolean
+          prev_class: string
+          prev_marks_obtained: number | null
+          prev_marks_total: number | null
+          prev_school: string
+          student_id: string
+          updated_at: string
+        }
+        Insert: {
+          achievements?: string
+          created_at?: string
+          current_class?: string
+          current_group?: string
+          current_medium?: string
+          current_school?: string
+          extra_interest?: string
+          id?: string
+          is_hafiz?: boolean
+          is_volunteer?: boolean
+          prev_class?: string
+          prev_marks_obtained?: number | null
+          prev_marks_total?: number | null
+          prev_school?: string
+          student_id: string
+          updated_at?: string
+        }
+        Update: {
+          achievements?: string
+          created_at?: string
+          current_class?: string
+          current_group?: string
+          current_medium?: string
+          current_school?: string
+          extra_interest?: string
+          id?: string
+          is_hafiz?: boolean
+          is_volunteer?: boolean
+          prev_class?: string
+          prev_marks_obtained?: number | null
+          prev_marks_total?: number | null
+          prev_school?: string
+          student_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      guardians: {
+        Row: {
+          cnic: string | null
+          created_at: string
+          email: string | null
+          emergency_name: string | null
+          emergency_phone: string | null
+          emergency_relationship: string | null
+          id: string
+          is_whatsapp: boolean | null
+          name: string | null
+          phone: string | null
+          relationship: string | null
+        }
+        Insert: {
+          cnic?: string | null
+          created_at?: string
+          email?: string | null
+          emergency_name?: string | null
+          emergency_phone?: string | null
+          emergency_relationship?: string | null
+          id: string
+          is_whatsapp?: boolean | null
+          name?: string | null
+          phone?: string | null
+          relationship?: string | null
+        }
+        Update: {
+          cnic?: string | null
+          created_at?: string
+          email?: string | null
+          emergency_name?: string | null
+          emergency_phone?: string | null
+          emergency_relationship?: string | null
+          id?: string
+          is_whatsapp?: boolean | null
+          name?: string | null
+          phone?: string | null
+          relationship?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'guardian_id_fkey'
+            columns: ['id']
+            isOneToOne: true
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          }
+        ]
+      }
+      Interests: {
+        Row: {
+          career_aspiration: string
+          created_at: string
+          hobby: string
+          id: string
+          source: string | null
+          subject_ranking: Json
+          updated_at: string
+        }
+        Insert: {
+          career_aspiration?: string
+          created_at?: string
+          hobby?: string
+          id?: string
+          source?: string | null
+          subject_ranking?: Json
+          updated_at?: string
+        }
+        Update: {
+          career_aspiration?: string
+          created_at?: string
+          hobby?: string
+          id?: string
+          source?: string | null
+          subject_ranking?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          address: string | null
+          avatar_url: string | null
+          blood_group: string | null
+          city: string | null
+          cnic: string | null
+          dob: string | null
+          first_name: string | null
+          full_name: string | null
+          gender: string | null
+          id: string
+          last_name: string | null
+          province: string | null
+        }
+        Insert: {
+          address?: string | null
+          avatar_url?: string | null
+          blood_group?: string | null
+          city?: string | null
+          cnic?: string | null
+          dob?: string | null
+          first_name?: string | null
+          full_name?: string | null
+          gender?: string | null
+          id: string
+          last_name?: string | null
+          province?: string | null
+        }
+        Update: {
+          address?: string | null
+          avatar_url?: string | null
+          blood_group?: string | null
+          city?: string | null
+          cnic?: string | null
+          dob?: string | null
+          first_name?: string | null
+          full_name?: string | null
+          gender?: string | null
+          id?: string
+          last_name?: string | null
+          province?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

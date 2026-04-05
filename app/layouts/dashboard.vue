@@ -1,5 +1,7 @@
 <script setup lang="ts">
-const layoutStore = useLayoutStore()
+// import type { NavigationMenuItem } from 'nuxt/ui'
+
+const navItems = useNavigation()
 </script>
 
 <template>
@@ -8,41 +10,22 @@ const layoutStore = useLayoutStore()
       <UDashboardSidebar
         collapsible
         :default-size="20"
-        class="rounded-r-xl bg-neutral-800/10 dark:bg-primary-300/5"
+        class="rounded-r-xl bg-neutral-800/10 dark:bg-primary-300/10"
       >
         <template #header="{ collapsed }">
           <AppLogo :collapsed="collapsed" />
         </template>
         <template #default="{ collapsed }">
           <UNavigationMenu
-            :collapsed="collapsed"
-            :items="layoutStore.dashboardMenu[0]"
-            variant="pill"
-            color="neutral"
             orientation="vertical"
             tooltip
             popover
+            :collapsed="collapsed"
+            :items="navItems[0]"
             :ui="{
-              link: 'flex h-[10vh]',
-              linkLeadingIcon: 'size-5',
-              linkLabel: 'text-lg truncate'
+              link: 'gap-2 py-4'
             }"
           />
-        </template>
-        <template #footer="{ collapsed }">
-          <div class="flex flex-col w-full gap-3">
-            <UNavigationMenu
-              :collapsed="collapsed"
-              :items="layoutStore.dashboardMenu[1]"
-              :disable-click-trigger="true"
-              orientation="vertical"
-              tooltip
-              popover
-              highlight
-              class="w-full"
-              size="xl"
-            />
-          </div>
         </template>
       </UDashboardSidebar>
 
@@ -55,10 +38,7 @@ const layoutStore = useLayoutStore()
             :menu="{ side: 'left' }"
           >
             <template #leading>
-              <div class="flex items-center">
-                <UDashboardSidebarCollapse />
-                <USeparator orientation="vertical" />
-              </div>
+              <UDashboardSidebarCollapse />
             </template>
             <template #title>
               <AppLogo
@@ -69,12 +49,13 @@ const layoutStore = useLayoutStore()
 
             <template #right>
               <UButton
-                :icon="ICONS.nav.home"
                 label="Back to Home"
                 variant="soft"
                 color="neutral"
+                :icon="ICONS.nav.home"
                 :to="URLS.home"
               />
+              <ProfileDropdown />
             </template>
           </UDashboardNavbar>
         <!-- <UDashboardToolbar>

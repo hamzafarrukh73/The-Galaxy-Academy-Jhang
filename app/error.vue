@@ -10,7 +10,7 @@ const handleClearError = () => {
 }
 
 const title = 'Error Occurred - The Galaxy Academy'
-const description = 'Oops! Something went wrong on our end.'
+const description = 'Oops! Something went wrong.'
 
 useSeoMeta({
   title,
@@ -22,11 +22,8 @@ const toaster = { position: 'top-center', duration: 3000 } as const
 
 <template>
   <UApp :toaster="toaster">
-    <div class="fixed inset-0 flex items-center justify-center overflow-hidden">
-      <!-- Minimalist Background Accent -->
-      <div class="absolute -top-1/4 -right-1/4 w-[600px] h-[600px] bg-primary-500/10 blur-[120px] rounded-full" />
-      <div class="absolute -bottom-1/4 -left-1/4 w-[600px] h-[600px] bg-blue-500/5 blur-[120px] rounded-full" />
-
+    <UPage>
+      <BgGlow />
       <div class="relative z-10 text-center px-4">
         <h1 class="text-9xl font-black text-zinc-100 dark:text-zinc-900 select-none">
           {{ error.statusCode }}
@@ -62,7 +59,7 @@ const toaster = { position: 'top-center', duration: 3000 } as const
           />
         </div>
       </div>
-    </div>
+    </UPage>
   </UApp>
 </template>
 

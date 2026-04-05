@@ -4,7 +4,12 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
   const pageAuth = to.meta.auth || 'public'
   const requiredRole = to.meta.requiredRole || false
-  const userRole = authStore.user?.role || 'anonymous'
+  const userRole = 'anonymous'
+
+  // If user is not authenticated then try again to get session
+  // if (!authStore.isAuthenticated) {
+
+  // }
 
   // User is authenticated then block the auth pages
   if (authStore.isAuthenticated && to.path.includes('auth')) {

@@ -2,9 +2,7 @@
  * Auth Repository
  * Identity and authentication logic.
  */
-import type { AuthResponse, UserResponse, Session } from '@supabase/supabase-js'
-import { mapSupabaseUser } from './userRepository'
-import type { User } from './userRepository'
+import type { AuthResponse, UserResponse, Session, User } from '@supabase/supabase-js'
 
 /**
  * Repository
@@ -26,17 +24,10 @@ export class AuthRepository {
     const { user } = await this.request<AuthResponse['data']>(
       this.supabase.auth.signUp({
         email: payload.email,
-        password: payload.password1,
-        options: {
-          data: {
-            first_name: payload.first_name,
-            last_name: payload.last_name,
-            role: 'user'
-          }
-        }
+        password: payload.password1
       }) as PromiseLike<{ data: AuthResponse['data'], error: unknown }>
     )
-    return mapSupabaseUser(user)
+    return user
   }
 
   async login(payload: { email: string, password: string }) {
@@ -46,7 +37,7 @@ export class AuthRepository {
         password: payload.password
       }) as PromiseLike<{ data: AuthResponse['data'], error: unknown }>
     )
-    return mapSupabaseUser(user)
+    return user
   }
 
   async logout() {
@@ -66,7 +57,7 @@ export class AuthRepository {
     const { user } = await this.request<UserResponse['data']>(
       this.supabase.auth.updateUser({ password }) as unknown as PromiseLike<{ data: UserResponse['data'], error: unknown }>
     )
-    return mapSupabaseUser(user)
+    return user
   }
 
   async socialLogin(provider: 'google' | 'github') {
@@ -91,7 +82,7 @@ export class AuthRepository {
 
   onAuthStateChange(callback: (event: string, user: User | null) => void) {
     return this.supabase.auth.onAuthStateChange((event: string, session: Session | null) => {
-      callback(event, mapSupabaseUser(session?.user || null))
+      callback(event, session?.user || null)
     })
   }
 

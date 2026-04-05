@@ -22,8 +22,8 @@ const toaster = { position: 'top-center', duration: 3000 } as const
 
 <template>
   <UApp :toaster="toaster">
-    <NuxtLoadingIndicator />
     <BgGlow />
+    <NuxtLoadingIndicator />
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>

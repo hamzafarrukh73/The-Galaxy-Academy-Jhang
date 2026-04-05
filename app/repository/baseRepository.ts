@@ -138,4 +138,17 @@ export class BaseRepository<T extends string, M = unknown> {
     const item = await this.findOne(id)
     return !!item
   }
+
+  /**
+   * Upsert a record
+   */
+  async upsert(data: Record<string, unknown>): Promise<M> {
+    const q = this.supabase
+      .from(this.table)
+      .upsert(data)
+      .select()
+      .single()
+
+    return await this.request<M>(q as PromiseLike<{ data: M | null, error: unknown }>)
+  }
 }

@@ -1,42 +1,37 @@
 <script lang="ts" setup>
+definePageMeta({
+  navGroup: 'landing'
+})
 const landingStore = useLandingStore()
 </script>
 
 <template>
-  <UContainer>
-    <section
+  <UContainer class="flex flex-col gap-12">
+    <UPageHero
       id="home"
-      class="flex justify-center items-center min-h-[90vh] scroll-mt-[15vh]"
-    >
-      <UPageHero
-        title="Academic Institute"
-        description="Bridge the gap between school lessons and exams. We provide the structured environment and guidance that students need to excel in their subjects."
-        orientation="vertical"
-        :links="landingStore.heroLinks"
-      />
-    </section>
+      title="Academic Institute"
+      description="Bridge the gap between school lessons and exams. We provide the structured environment and guidance that students need to excel in their subjects."
+      orientation="vertical"
+      :links="landingStore.heroLinks"
+      class="flex items-center justify-center min-h-[90vh] scroll-mt-[15vh]"
+    />
 
-    <section
+    <UPageSection
       id="benefits"
-      class="flex justify-center items-center min-h-[90vh] py-16"
-    >
-      <UPageSection
-        title="We Provide"
-        :features="landingStore.benefits"
-      />
-    </section>
+      title="We Provide"
+      :features="landingStore.benefits"
+      class="flex items-center justify-center min-h-[90vh]"
+    />
 
-    <section
+    <UPageSection
       id="pricing"
-      class="flex flex-col gap-12 justify-center items-center min-h-[90vh] py-16 scroll-mt-[10vh]"
+      title="Pricing Plans"
+      class="flex flex-col items-center justify-center gap-12 min-h-[90vh]"
     >
-      <h2 class="text-center">
-        Pricing Plans
-      </h2>
       <UTabs
         :items="landingStore.pricingTabs"
         orientation="horizontal"
-        class="w-full flex gap-16 p-4"
+        class="flex gap-12 w-full"
       >
         <template #matriculation>
           <UPricingPlans
@@ -58,9 +53,9 @@ const landingStore = useLandingStore()
           class="w-full"
         /> -->
       </UTabs>
-    </section>
+    </UPageSection>
 
-    <section
+    <!-- <section
       id="get-started"
       class="flex justify-center items-center min-h-[60vh] py-16"
     >
@@ -71,6 +66,26 @@ const landingStore = useLandingStore()
         class="w-full lg:w-fit"
         variant="naked"
       />
-    </section>
+    </section> -->
+
+    <UPageSection
+      id="contact"
+      headline="Contact Us"
+      :features="landingStore.contacts"
+      title="We're here to help you"
+      description="Need support or have question? Email or call us."
+      orientation="horizontal"
+      class="flex items-center justify-center min-h-[80vh]"
+    >
+      <UPageCard
+        title="Frequently Asked Questions"
+        variant="naked"
+        class="py-8 lg:py-4"
+      >
+        <UAccordion :items="landingStore.faqs" />
+      </UPageCard>
+    </UPageSection>
+
+    <FloatingButton />
   </UContainer>
 </template>

@@ -1,18 +1,18 @@
-import type { PricingPlanProps, ButtonProps, TabsItem } from '@nuxt/ui'
+import type { ButtonProps, PricingPlanProps, TabsItem } from '@nuxt/ui'
 
 export const useLandingStore = defineStore('landingStore', () => {
   // --- STATE ---
   const heroLinks = ref<ButtonProps[]>([
     {
-      label: 'Get Started',
-      icon: ICONS.nav.getStarted,
+      label: 'Enroll Now',
+      icon: ICONS.nav.education,
       variant: 'solid',
       size: 'xl',
       to: URLS.auth.registration.home
     },
     {
       label: 'Learn More',
-      icon: ICONS.nav.learnMore,
+      icon: ICONS.info.help,
       variant: 'soft',
       size: 'xl',
       to: URLS.landing.benefits
@@ -24,19 +24,19 @@ export const useLandingStore = defineStore('landingStore', () => {
       title: 'Conceptual Clarity',
       description:
         'Master core academic theories through structured lessons that simplify complex textbook topics into clear, understandable concepts.',
-      icon: ICONS.benefits.automation
+      icon: ICONS.info.feature
     },
     {
       title: 'Disciplined Study Environment',
       description:
         'Benefit from a physical classroom dedicated to focused learning, free from the distractions of home or digital environments.',
-      icon: ICONS.benefits.analytics
+      icon: ICONS.nav.education
     },
     {
       title: 'Exam Preparation Strategy',
       description:
         'Learn systematic approaches to academic assessments, focusing on curriculum requirements and effective test-taking techniques.',
-      icon: ICONS.benefits.integration
+      icon: ICONS.action.edit
     }
   ])
 
@@ -56,9 +56,9 @@ export const useLandingStore = defineStore('landingStore', () => {
       price: 'Rs. 1200',
       billingCycle: '/month',
       features: [
-        'English',
         'Urdu',
-        'Islamiat'
+        'English',
+        'Islamiyat'
       ],
       button: {
         label: 'Register Now',
@@ -69,10 +69,11 @@ export const useLandingStore = defineStore('landingStore', () => {
       price: 'Rs. 2800',
       billingCycle: '/month',
       features: [
-        'Mathematics',
         'Physics',
+        'Mathematics',
         'Chemistry',
-        'Biology/Computer Science'
+        'Biology',
+        'Computer Science'
       ],
       button: {
         label: 'Register Now',
@@ -85,13 +86,14 @@ export const useLandingStore = defineStore('landingStore', () => {
       discount: 'Rs. 3200',
       billingPeriod: '20% off',
       features: [
-        'English',
         'Urdu',
-        'Islamiat',
+        'English',
+        'Islamiyat',
         'Physics',
         'Mathematics',
         'Chemistry',
-        'Computer Science/Biology'
+        'Biology',
+        'Computer Science'
       ],
       button: {
         label: 'Register Now',
@@ -106,9 +108,9 @@ export const useLandingStore = defineStore('landingStore', () => {
       price: 'Rs. 1500',
       billingCycle: '/month',
       features: [
-        'English',
         'Urdu',
-        'Islamiat'
+        'English',
+        'Islamiyat'
       ],
       button: {
         label: 'Register Now',
@@ -120,8 +122,10 @@ export const useLandingStore = defineStore('landingStore', () => {
       billingCycle: '/month',
       features: [
         'Physics',
-        'Mathematics/Biology',
-        'Computer Science/Chemistry'
+        'Mathematics',
+        'Biology',
+        'Chemistry',
+        'Computer Science'
       ],
       button: {
         label: 'Register Now',
@@ -134,12 +138,14 @@ export const useLandingStore = defineStore('landingStore', () => {
       discount: 'Rs. 3600',
       billingPeriod: '20% off',
       features: [
-        'English',
         'Urdu',
-        'Islamiat',
+        'English',
+        'Islamiyat',
         'Physics',
-        'Mathematics/Biology',
-        'Computer Science/Chemistry'
+        'Mathematics',
+        'Biology',
+        'Chemistry',
+        'Computer Science'
       ],
       button: {
         label: 'Register Now',
@@ -150,13 +156,13 @@ export const useLandingStore = defineStore('landingStore', () => {
   const ctaLinks = ref<ButtonProps[]>([
     {
       label: 'Join Now',
-      icon: ICONS.nav.getStarted,
+      icon: ICONS.action.start,
       variant: 'solid',
       size: 'xl',
       to: URLS.auth.registration.home
     }, {
       label: 'Contact Us',
-      icon: ICONS.nav.contact,
+      icon: ICONS.action.call,
       variant: 'soft',
       size: 'xl',
       to: EXTERNAL_URLS.social.whatsapp,
@@ -165,15 +171,53 @@ export const useLandingStore = defineStore('landingStore', () => {
 
   ])
 
+  const contacts = ref([
+    {
+      description: 'Monday to Saturday, 4 PM to 7 PM',
+      icon: ICONS.info.time
+    },
+    {
+      description: '+923326283024',
+      icon: ICONS.action.call
+    },
+    {
+      description: 'thegalaxyacademyjhang@gmail.com',
+      icon: ICONS.info.mail
+    }
+  ])
+
+  const contactLinks = ref([
+    {
+      label: 'Whatsapp',
+      icon: ICONS.brand.whatsapp,
+      to: EXTERNAL_URLS.social.whatsapp
+    }
+  ])
+
+  const faqs = [
+    {
+      label: 'Are there separate batches for students who start late?',
+      content: 'Yes, we offer dedicated batches for students who join mid-session. Our system is designed to integrate late-joiners without disrupting the progress of existing classes.'
+    }, {
+      label: 'What is the qualification of the teachers?',
+      content: 'Our faculty consists of subject specialists with years of experience. We use a "Concept First" approach, ensuring students understand the "Why" before the "How."'
+    }, {
+      label: 'How do you track student progress?',
+      content: 'We conduct chapter-wise tests and before the board exams, we run a dedicated Test Session to simulate the actual exam environment.'
+    }
+  ]
   // --- GETTERS ---
 
   // --- EXPOSE ---
   return {
     heroLinks,
-    ctaLinks,
+    benefits,
     pricingTabs,
     matriculationPlans,
     intermediatePlans,
-    benefits
+    ctaLinks,
+    contacts,
+    contactLinks,
+    faqs
   }
 })
