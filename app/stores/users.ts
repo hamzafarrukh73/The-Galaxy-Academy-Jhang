@@ -1,56 +1,38 @@
-import { profileRepository, type Profile } from '~/repository/profileRepository'
+import type { Users } from '~/repository/modules/users'
+
 import type { ApiError } from '~/plugins/errors'
 
-export type UIProfile = {
-  [K in keyof Profile]: NonNullable<Profile[K]>
-}
-
-export const useProfileStore = defineStore('profileStore', () => {
+export const useUsersStore = defineStore('usersStore', () => {
   const toast = useToast()
-  const { $formatError } = useNuxtApp()
+  const { $formatError, $api } = useNuxtApp()
 
   const avatarUploading = ref(false)
   const avatarFile = ref<File | null>(null)
 
-  const profileFetched = ref(false)
-  const profile = ref<Partial<UIProfile>>({
-    first_name: '',
-    last_name: '',
-    full_name: '',
-    cnic: '',
-    dob: undefined,
-    gender: '',
-    blood_group: '',
-    address: '',
-    city: '',
-    province: '',
-    avatar_url: ''
-  })
+  const userFetched = ref(false)
+  const user = ref<Users['Row'] | null>(null)
 
-  const displayAvatarUrl = ref(profile.value.avatar_url)
+  const displayAvatarUrl = ref(user.value?.avatar_url)
 
-  const fullName = computed(() => {
-    return `${profile.value.first_name} ${profile.value.last_name}`
-  })
-
-  const getProfile = async () => {
+  const getUser = async () => {
     const authStore = useAuthStore()
-    if (profileFetched.value || !authStore.user?.sub) return
+    if (userFetched.value || !authStore.userId) return
 
     try {
-      const data = await profileRepository.get(authStore.user.sub)
+      const data = await $api.users.get(authStore.userId)
+
       if (data) {
-        profile.value = data as Partial<UIProfile>
-        displayAvatarUrl.value = profile.value.avatar_url
+        user.value = data
+        displayAvatarUrl.value = user.value?.avatar_url
       }
     } catch (error) {
       console.error('Error fetching profile:', error)
     } finally {
-      profileFetched.value = true
+      userFetched.value = true
     }
   }
 
-  const upsertProfile = async () => {
+  const upsertUser = async (updates: Users['Update']) => {
     useLayoutStore().isLoading = true
     const authStore = useAuthStore()
 
@@ -58,23 +40,22 @@ export const useProfileStore = defineStore('profileStore', () => {
 
     try {
       if (avatarFile.value) {
-        await handleAvatarUpload()
+        updates.avatar_url = await handleAvatarUpload()
       }
 
-      const data = await profileRepository.upsert(
+      const data = await $api.users.upsert(
         {
-          ...profile.value,
-          full_name: fullName.value,
+          ...updates,
           id: authStore.userId
-        }
+        } as Users['Insert']
       )
 
-      profile.value = data as Partial<UIProfile>
+      user.value = data
       toast.add({ title: 'Success', description: 'Profile Updated', color: 'success' })
     } catch (error) {
       toast.add($formatError(error as ApiError))
     } finally {
-      displayAvatarUrl.value = profile.value.avatar_url
+      displayAvatarUrl.value = user.value?.avatar_url
       useLayoutStore().isLoading = false
     }
   }
@@ -98,10 +79,7 @@ export const useProfileStore = defineStore('profileStore', () => {
     try {
       const authStore = useAuthStore()
       if (avatarFile.value) {
-        const url = await uploadFile(`${authStore.userId}/avatar.png`, avatarFile.value)
-        if (url) {
-          profile.value.avatar_url = url
-        }
+        return await uploadFile(`${authStore.userId}/avatar.png`, avatarFile.value)
       }
     } catch (error) {
       toast.add($formatError(error as ApiError))
@@ -154,13 +132,20 @@ export const useProfileStore = defineStore('profileStore', () => {
     return ''
   }
 
+  const clearData = () => {
+    user.value = null
+    userFetched.value = false
+    displayAvatarUrl.value = ''
+  }
+
   return {
-    profile,
-    fullName,
+    user,
     avatarUploading,
     displayAvatarUrl,
-    getProfile,
-    upsertProfile,
-    handleAvatarSelect
+    getUser,
+    upsertUser,
+    handleAvatarSelect,
+    handleAvatarUpload,
+    clearData
   }
 })

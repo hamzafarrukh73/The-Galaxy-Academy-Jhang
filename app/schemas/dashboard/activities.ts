@@ -1,34 +1,15 @@
 import { z } from 'zod'
 
-export const aspirationsSchema = z.object({
-  career_aspiration: z.string().min(1, 'Please select a career goal').meta({
-    label: 'Career Goal',
-    type: 'select',
-    items: ['Doctor / MBBS', 'Engineer / Engineering', 'Chartered Accountant (CA)', 'Software Developer / IT', 'Civil Services (CSS)', 'Other'],
-    placeholder: 'What do you want to be?',
-    orientation: 'vertical'
-  })
+export const activitiesSchema = z.object({
+  career_goal: z.string().optional().meta({ label: 'Career Goal', placeholder: 'What do you want to be?', orientation: 'vertical' }),
+  hobby: z.string().optional().meta({ label: 'Hobbies / Passion', placeholder: 'e.g., Reading, Coding, Cricket', orientation: 'vertical' }),
+  role_model: z.string().optional().meta({ label: 'Who is your Role Model?', placeholder: 'e.g., Parents, Teacher', orientation: 'vertical' }),
+  inspiration: z.string().optional().meta({ label: 'What is your biggest Inspiration?', placeholder: 'Describe what motivates you', orientation: 'vertical' }),
+  is_hafiz: z.boolean().optional().meta({ label: 'Are you Hafiz-e-Quran?', type: 'switch', orientation: 'horizontal', placeholder: ' ' }),
+  want_job: z.boolean().optional().meta({ label: 'Do you like the idea of doing a job?', type: 'switch', orientation: 'horizontal', placeholder: ' ' })
 })
 
-export const hobbySchema = z.object({
-  hobby: z.string().min(2, 'Please enter a hobby').meta({
-    label: 'Hobby / Passion',
-    placeholder: 'e.g., Reading, Coding, Cricket',
-    orientation: 'vertical'
-  })
-})
-
-export const discoverySchema = z.object({
-  source: z.string().min(1, 'Please select how you heard about us').meta({
-    label: 'How did you hear about us?',
-    type: 'select',
-    items: ['Social Media (Facebook/Instagram)', 'Friend / Word of Mouth', 'Flyer / Brochure', 'Newspaper Advertisement', 'Other'],
-    placeholder: 'Select Source',
-    orientation: 'vertical'
-  })
-})
-
-export const subjectLikingSchema = z.object({
+export const subjectRatingSchema = z.object({
   subject_ranking: z.array(z.object({
     name: z.string(),
     liking: z.number().min(1).max(5)

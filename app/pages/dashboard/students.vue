@@ -1,43 +1,56 @@
 <script lang="ts" setup>
-import {
-  currentAcademicSchema,
-  extraAcademicSchema
-} from '~/schemas/dashboard/academic'
+import type { Students } from '~/repository/modules/students'
+import type { Activities } from '~/repository/modules/activities'
+import type { Tables } from '~/repository/index'
 
 import {
-  aspirationsSchema,
-  hobbySchema,
-  discoverySchema,
-  subjectLikingSchema
-} from '~/schemas/dashboard/interests'
+  currentStudentSchema
+} from '~/schemas/dashboard/students'
+
+import {
+  activitiesSchema,
+  subjectRatingSchema
+} from '~/schemas/dashboard/activities'
 
 definePageMeta({
   layout: 'dashboard',
   auth: 'private'
 })
 
-const academicStore = useAcademicStore()
-const interestsStore = useInterestsStore()
+const studentsStore = useStudentsStore()
+const activitiesStore = useActivitiesStore()
+
+const { $api } = useNuxtApp()
+
+const studentState = ref<Students['Update']>({
+  school: '',
+  class: undefined,
+  subject_group: undefined
+})
+const activitiesState = ref<Activities['Update'] & { subject_ranking?: { name: string, liking: number }[] }>({
+  career_goal: '',
+  hobby: '',
+  role_model: '',
+  is_hafiz: false,
+  want_job: false,
+  subject_ranking: []
+})
 
 const loadData = async () => {
-  await Promise.all([
-    academicStore.getAcademic(),
-    interestsStore.getInterests()
+  const [_, __, subjectsRes] = await Promise.all([
+    studentsStore.getStudent(),
+    activitiesStore.getActivities(),
+    $api.subjects.list()
   ])
 
-  // Initialize subject_ranking if it doesn't exist
-  if (!interestsStore.interests.subject_ranking || interestsStore.interests.subject_ranking.length === 0) {
-    interestsStore.interests.subject_ranking = [
-      { name: 'Mathematics', liking: 3 },
-      { name: 'Physics', liking: 3 },
-      { name: 'Chemistry', liking: 3 },
-      { name: 'Biology', liking: 3 },
-      { name: 'Computer Science', liking: 3 },
-      { name: 'English', liking: 3 },
-      { name: 'Urdu', liking: 3 },
-      { name: 'Islamiyat', liking: 3 },
-      { name: 'Pakistan Studies', liking: 3 }
-    ]
+  studentState.value = { ...studentState.value, ...studentsStore.student }
+  activitiesState.value = { ...activitiesState.value, ...activitiesStore.activities }
+
+  if (!activitiesState.value.subject_ranking || activitiesState.value.subject_ranking.length === 0) {
+    activitiesState.value.subject_ranking = (subjectsRes as Tables['subjects']['Row'][]).map(s => ({
+      name: s.name,
+      liking: 3
+    }))
   }
 }
 
@@ -45,96 +58,56 @@ onMounted(() => {
   loadData()
 })
 
-const onSaveAcademic = async () => {
-  await academicStore.upsertAcademic()
+const onSaveStudent = async () => {
+  await studentsStore.upsertStudent(studentState.value)
 }
 
-const onSaveInterests = async () => {
-  await interestsStore.upsertInterests()
+const onSaveActivities = async () => {
+  await activitiesStore.upsertActivities(activitiesState.value)
 }
 </script>
 
 <template>
   <UPage>
     <UPageHeader
-      title="Academic Records & Interests"
+      title="Student Records & Activities"
       description="Manage your enrollment, educational background, and learning goals."
       :icon="ICONS.nav.education"
     />
 
     <UPageBody>
       <UPageGrid>
-        <!-- Card 1: Current Academic Information -->
+        <!-- Card 1: Academic Info -->
         <UPageCard
-          title="Current Enrollment"
+          title="Academic Info"
           :icon="ICONS.nav.education"
-          class="h-full lg:col-span-2"
-        >
-          <AppForm
-            :state="academicStore.academic"
-            :schema="currentAcademicSchema"
-            submit-label="Save"
-            @submit="onSaveAcademic"
-          />
-        </UPageCard>
-
-        <!-- Card 2: Extracurricular & Achievements -->
-        <UPageCard
-          :icon="ICONS.info.trophy"
           class="h-full lg:col-span-1"
         >
           <AppForm
-            :state="academicStore.academic"
-            :schema="extraAcademicSchema"
+            :state="studentState"
+            :schema="currentStudentSchema"
             grid-class="grid grid-cols-1 gap-4"
-            submit-label="Save Achievements"
-            @submit="onSaveAcademic"
+            submit-label="Save Info"
+            @submit="onSaveStudent"
           />
         </UPageCard>
 
-        <!-- Card 3: Future Aspirations -->
+        <!-- Card 2: Interests & Goals -->
         <UPageCard
-          :icon="ICONS.action.start"
-          class="h-full"
+          title="Interests & Goals"
+          :icon="ICONS.info.trophy"
+          class="h-full lg:col-span-2"
         >
           <AppForm
-            :state="interestsStore.interests"
-            :schema="aspirationsSchema"
-            grid-class="grid grid-cols-1 gap-4"
-            submit-label="Save Aspirations"
-            @submit="onSaveInterests"
+            :state="activitiesState"
+            :schema="activitiesSchema"
+            grid-class="grid grid-cols-1 md:grid-cols-2 gap-4"
+            submit-label="Save Activities"
+            @submit="onSaveActivities"
           />
         </UPageCard>
 
-        <!-- Card 4: Hobbies & Passions -->
-        <UPageCard
-          :icon="ICONS.action.heart"
-          class="h-full"
-        >
-          <AppForm
-            :state="interestsStore.interests"
-            :schema="hobbySchema"
-            grid-class="grid grid-cols-1 gap-4"
-            submit-label="Save Hobby"
-            @submit="onSaveInterests"
-          />
-        </UPageCard>
-
-        <!-- Card 5: Discovery -->
-        <UPageCard
-          :icon="ICONS.info.help"
-          class="h-full"
-        >
-          <AppForm
-            :state="interestsStore.interests"
-            :schema="discoverySchema"
-            grid-class="grid grid-cols-1 gap-4"
-            submit-label="Save Discovery"
-            @submit="onSaveInterests"
-          />
-        </UPageCard>
-
-        <!-- Card 7: Subject Liking (was interests.vue Card 4) -->
+        <!-- Card 3: Subject Ratings -->
         <UPageCard
           title="Subject Preference"
           description="Rate your interest in each subject from 1 (Least Liked) to 5 (Most Liked). This helps us tailor your learning experience."
@@ -142,15 +115,15 @@ const onSaveInterests = async () => {
           class="lg:col-span-3"
         >
           <AppForm
-            :state="interestsStore.interests"
-            :schema="subjectLikingSchema"
-            submit-label="Save Preferences"
-            @submit="onSaveInterests"
+            :state="activitiesState"
+            :schema="subjectRatingSchema"
+            submit-label="Save Ratings"
+            @submit="onSaveActivities"
           >
             <template #field-subject_ranking>
               <div class="space-y-8 w-full px-1">
                 <div
-                  v-for="subject in interestsStore.interests.subject_ranking"
+                  v-for="subject in activitiesState.subject_ranking"
                   :key="subject.name"
                   class="flex flex-col gap-2"
                 >

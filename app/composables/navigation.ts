@@ -17,16 +17,16 @@ export const useNavigation = () => {
       return [
         [{
           icon: ICONS.info.stats,
-          label: 'Overview',
+          label: 'Profile Overview',
           to: URLS.dashboard.home
         }, {
           icon: ICONS.nav.user,
-          label: 'Personal',
+          label: 'Personal Profile',
           to: URLS.dashboard.personal
         }, {
           icon: ICONS.nav.education,
-          label: 'Academic & Interests',
-          to: URLS.dashboard.academic
+          label: 'Student Details',
+          to: URLS.dashboard.students
         }],
         [{
           icon: ICONS.nav.user,

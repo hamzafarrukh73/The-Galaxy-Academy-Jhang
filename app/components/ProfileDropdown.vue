@@ -2,10 +2,14 @@
 import type { DropdownMenuItem } from '@nuxt/ui'
 
 const authStore = useAuthStore()
-const profileStore = useProfileStore()
+const usersStore = useUsersStore()
 
 onMounted(async () => {
-  await profileStore.getProfile()
+  await usersStore.getUser()
+})
+
+const fullName = computed(() => {
+  return `${usersStore.user?.first_name || ''} ${usersStore.user?.last_name || ''}`.trim() || 'User'
 })
 
 const profileMenu = computed<DropdownMenuItem[]>(() => {
@@ -20,6 +24,7 @@ const profileMenu = computed<DropdownMenuItem[]>(() => {
       icon: ICONS.action.exit,
       label: 'Logout',
       color: 'error',
+      class: 'hover:cursor-pointer',
       onSelect: () => authStore.logout()
     }
   ]
@@ -43,21 +48,24 @@ const profileMenu = computed<DropdownMenuItem[]>(() => {
   >
     <UButton
       :avatar="{
-        src: profileStore.profile.avatar_url,
+        src: usersStore.user?.avatar_url || '',
         icon: ICONS.nav.user,
-        size: 'md'
+        loading: 'lazy',
+        ui: {
+          icon: 'size-full'
+        },
+        class: 'size-[5vh]'
       }"
       variant="outline"
       color="neutral"
-      class="rounded-full"
-      size="xl"
+      class="rounded-full hover:cursor-pointer p-1"
     />
     <template #profile>
       <UUser
-        :name="profileStore.fullName"
+        :name="fullName"
         :description="authStore.user?.email"
         :avatar="{
-          src: profileStore.profile.avatar_url,
+          src: usersStore.user?.avatar_url || '',
           icon: ICONS.nav.user,
           loading: 'lazy'
         }"

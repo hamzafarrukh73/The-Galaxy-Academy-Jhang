@@ -1,20 +1,9 @@
-import { authRepository } from '~/repository/authRepository'
 import type { ApiError } from '~/plugins/errors'
-
-interface LoginPayload {
-  email: string
-  password: string
-}
-
-interface SignupPayload {
-  email: string
-  password1: string
-  password2: string
-}
 
 export const useAuthStore = defineStore('authStore', () => {
   const toast = useToast()
-  const { $formatError } = useNuxtApp()
+  const { $formatError, $api } = useNuxtApp()
+
   const user = useSupabaseUser()
   const session = useSupabaseSession()
 
@@ -23,13 +12,23 @@ export const useAuthStore = defineStore('authStore', () => {
   const userId = computed(() => user.value?.sub)
 
   // --- ACTIONS ---
-  const register = async (payload: SignupPayload, redirectUrl?: string) => {
+  const verifySession = async () => {
+    const client = useSupabaseClient()
+    const { data, error } = await client.auth.getSession()
+    if (error || !data.session) {
+      return false
+    }
+    return true
+  }
+
+  const register = async (payload: Parameters<typeof $api.auth.register>[0], redirectUrl?: string) => {
     useLayoutStore().isLoading = true
     try {
-      await authRepository.register(payload)
+      await $api.auth.register(payload)
+
       toast.add({
-        title: 'Registration successful',
-        description: 'Login to continue.',
+        title: 'Auth',
+        description: 'Registration Successful!',
         color: 'success'
       })
       if (redirectUrl) setTimeout(() => navigateTo(redirectUrl), 300)
@@ -40,11 +39,16 @@ export const useAuthStore = defineStore('authStore', () => {
     }
   }
 
-  const login = async (payload: LoginPayload, redirectUrl: string = URLS.home) => {
+  const login = async (payload: Parameters<typeof $api.auth.login>[0], redirectUrl: string = URLS.home) => {
     useLayoutStore().isLoading = true
     try {
-      await authRepository.login(payload)
-      toast.add({ title: 'Welcome back!', color: 'success' })
+      await $api.auth.login(payload)
+
+      toast.add({
+        title: 'Auth',
+        description: 'Login Successful!',
+        color: 'success'
+      })
       if (redirectUrl) setTimeout(() => navigateTo(redirectUrl), 300)
     } catch (error) {
       toast.add($formatError(error as ApiError))
@@ -55,7 +59,14 @@ export const useAuthStore = defineStore('authStore', () => {
 
   const logout = async (redirectUrl: string = URLS.home) => {
     try {
-      await authRepository.logout()
+      await $api.auth.logout()
+
+      // Clear all global stores
+      useUsersStore().clearData()
+      useStudentsStore().clearData()
+      useGuardianStore().clearData()
+      useActivitiesStore().clearData()
+
       toast.add({ title: 'Logged out', color: 'neutral' })
       if (redirectUrl) setTimeout(() => navigateTo(redirectUrl), 300)
     } catch (error) {
@@ -66,8 +77,9 @@ export const useAuthStore = defineStore('authStore', () => {
   const resetPassword = async (email: string) => {
     useLayoutStore().isLoading = true
     try {
-      await authRepository.resetPassword(email)
-      toast.add({ title: 'Password Reset', description: 'Check your email for the link', color: 'success' })
+      await $api.auth.resetPassword(email)
+
+      toast.add({ title: 'Auth', description: 'Check your email for the link', color: 'success' })
     } catch (error) {
       toast.add($formatError(error as ApiError))
     } finally {
@@ -78,7 +90,8 @@ export const useAuthStore = defineStore('authStore', () => {
   const confirmPasswordReset = async (password: string) => {
     useLayoutStore().isLoading = true
     try {
-      await authRepository.confirmPasswordReset(password)
+      await $api.auth.confirmPasswordReset(password)
+
       toast.add({ title: 'Password Reset', description: 'Password reset successfully', color: 'success' })
 
       await navigateTo(URLS.auth.login)
@@ -92,7 +105,7 @@ export const useAuthStore = defineStore('authStore', () => {
   const socialGoogleLogin = async () => {
     useLayoutStore().isLoading = true
     try {
-      await authRepository.socialLogin('google')
+      await $api.auth.socialLogin('google')
     } catch (error) {
       toast.add($formatError(error as ApiError))
     } finally {
@@ -103,7 +116,8 @@ export const useAuthStore = defineStore('authStore', () => {
   const resendVerificationEmail = async (email: string) => {
     useLayoutStore().isLoading = true
     try {
-      await authRepository.resend({ type: 'signup', email })
+      await $api.auth.resend({ type: 'signup', email })
+
       toast.add({ title: 'Email Verification', description: 'Verification email sent', color: 'success' })
     } catch (error) {
       toast.add($formatError(error as ApiError))
@@ -115,7 +129,8 @@ export const useAuthStore = defineStore('authStore', () => {
   const verifyEmail = async (token_hash: string) => {
     useLayoutStore().isLoading = true
     try {
-      await authRepository.verifyOtp({ token_hash, type: 'signup' })
+      await $api.auth.verifyOtp({ token_hash, type: 'signup' })
+
       toast.add({ title: 'Email Verification', description: 'Email verified!', color: 'success' })
       await navigateTo(URLS.home)
     } catch (error) {
@@ -129,6 +144,7 @@ export const useAuthStore = defineStore('authStore', () => {
     user,
     userId,
     isAuthenticated,
+    verifySession,
     login,
     register,
     logout,

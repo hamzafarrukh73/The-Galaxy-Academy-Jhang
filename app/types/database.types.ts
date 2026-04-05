@@ -1123,185 +1123,288 @@ export type Database = {
   }
   public: {
     Tables: {
-      Academics: {
+      activities: {
         Row: {
-          achievements: string
+          career_goal: string | null
           created_at: string
-          current_class: string
-          current_group: string
-          current_medium: string
-          current_school: string
-          extra_interest: string
+          hobby: string | null
           id: string
           is_hafiz: boolean
-          is_volunteer: boolean
-          prev_class: string
-          prev_marks_obtained: number | null
-          prev_marks_total: number | null
-          prev_school: string
+          role_model: string | null
+          student_id: string | null
+          updated_at: string
+          want_job: boolean
+        }
+        Insert: {
+          career_goal?: string | null
+          created_at?: string
+          hobby?: string | null
+          id?: string
+          is_hafiz?: boolean
+          role_model?: string | null
+          student_id?: string | null
+          updated_at?: string
+          want_job?: boolean
+        }
+        Update: {
+          career_goal?: string | null
+          created_at?: string
+          hobby?: string | null
+          id?: string
+          is_hafiz?: boolean
+          role_model?: string | null
+          student_id?: string | null
+          updated_at?: string
+          want_job?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'activities_student_id_fkey'
+            columns: ['student_id']
+            isOneToOne: false
+            referencedRelation: 'students'
+            referencedColumns: ['id']
+          }
+        ]
+      }
+      guardian_student: {
+        Row: {
+          created_at: string
+          guardian_id: string
+          id: string
           student_id: string
           updated_at: string
         }
         Insert: {
-          achievements?: string
           created_at?: string
-          current_class?: string
-          current_group?: string
-          current_medium?: string
-          current_school?: string
-          extra_interest?: string
+          guardian_id: string
           id?: string
-          is_hafiz?: boolean
-          is_volunteer?: boolean
-          prev_class?: string
-          prev_marks_obtained?: number | null
-          prev_marks_total?: number | null
-          prev_school?: string
           student_id: string
           updated_at?: string
         }
         Update: {
-          achievements?: string
           created_at?: string
-          current_class?: string
-          current_group?: string
-          current_medium?: string
-          current_school?: string
-          extra_interest?: string
+          guardian_id?: string
           id?: string
-          is_hafiz?: boolean
-          is_volunteer?: boolean
-          prev_class?: string
-          prev_marks_obtained?: number | null
-          prev_marks_total?: number | null
-          prev_school?: string
           student_id?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: 'guardianStudent_guardian_id_fkey'
+            columns: ['guardian_id']
+            isOneToOne: false
+            referencedRelation: 'guardians'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'guardianStudent_student_id_fkey'
+            columns: ['student_id']
+            isOneToOne: false
+            referencedRelation: 'students'
+            referencedColumns: ['id']
+          }
+        ]
       }
       guardians: {
         Row: {
           cnic: string | null
           created_at: string
           email: string | null
-          emergency_name: string | null
-          emergency_phone: string | null
-          emergency_relationship: string | null
           id: string
           is_whatsapp: boolean | null
           name: string | null
           phone: string | null
           relationship: string | null
+          updated_at: string
+          user_id: string | null
         }
         Insert: {
           cnic?: string | null
           created_at?: string
           email?: string | null
-          emergency_name?: string | null
-          emergency_phone?: string | null
-          emergency_relationship?: string | null
-          id: string
-          is_whatsapp?: boolean | null
-          name?: string | null
-          phone?: string | null
-          relationship?: string | null
-        }
-        Update: {
-          cnic?: string | null
-          created_at?: string
-          email?: string | null
-          emergency_name?: string | null
-          emergency_phone?: string | null
-          emergency_relationship?: string | null
           id?: string
           is_whatsapp?: boolean | null
           name?: string | null
           phone?: string | null
           relationship?: string | null
+          updated_at: string
+          user_id?: string | null
+        }
+        Update: {
+          cnic?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_whatsapp?: boolean | null
+          name?: string | null
+          phone?: string | null
+          relationship?: string | null
+          updated_at?: string
+          user_id?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: 'guardian_id_fkey'
-            columns: ['id']
-            isOneToOne: true
-            referencedRelation: 'profiles'
+            foreignKeyName: 'guardians_user_id_fkey'
+            columns: ['user_id']
+            isOneToOne: false
+            referencedRelation: 'users'
             referencedColumns: ['id']
           }
         ]
       }
-      Interests: {
+      students: {
         Row: {
-          career_aspiration: string
+          class: Database['public']['Enums']['classes'] | null
           created_at: string
-          hobby: string
           id: string
-          source: string | null
-          subject_ranking: Json
+          school: string
+          subject_group: Database['public']['Enums']['subject_groups'] | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          class?: Database['public']['Enums']['classes'] | null
+          created_at?: string
+          id?: string
+          school?: string
+          subject_group?: Database['public']['Enums']['subject_groups'] | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          class?: Database['public']['Enums']['classes'] | null
+          created_at?: string
+          id?: string
+          school?: string
+          subject_group?: Database['public']['Enums']['subject_groups'] | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'student_user_id_fkey'
+            columns: ['user_id']
+            isOneToOne: true
+            referencedRelation: 'users'
+            referencedColumns: ['id']
+          }
+        ]
+      }
+      subject_rating: {
+        Row: {
+          created_at: string
+          id: string
+          rating: Database['public']['Enums']['ratings'] | null
+          student_id: string | null
+          subject_id: string
           updated_at: string
         }
         Insert: {
-          career_aspiration?: string
           created_at?: string
-          hobby?: string
           id?: string
-          source?: string | null
-          subject_ranking?: Json
+          rating?: Database['public']['Enums']['ratings'] | null
+          student_id?: string | null
+          subject_id: string
           updated_at?: string
         }
         Update: {
-          career_aspiration?: string
           created_at?: string
-          hobby?: string
           id?: string
-          source?: string | null
-          subject_ranking?: Json
+          rating?: Database['public']['Enums']['ratings'] | null
+          student_id?: string | null
+          subject_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'subject_ratings_subject_id_fkey'
+            columns: ['subject_id']
+            isOneToOne: false
+            referencedRelation: 'subjects'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'subjectRatings_student_id_fkey'
+            columns: ['student_id']
+            isOneToOne: false
+            referencedRelation: 'students'
+            referencedColumns: ['id']
+          }
+        ]
+      }
+      subjects: {
+        Row: {
+          created_at: string
+          id: string
+          is_arts: boolean
+          is_science: boolean
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_arts?: boolean
+          is_science?: boolean
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_arts?: boolean
+          is_science?: boolean
+          name?: string
           updated_at?: string
         }
         Relationships: []
       }
-      profiles: {
+      users: {
         Row: {
           address: string | null
           avatar_url: string | null
-          blood_group: string | null
-          city: string | null
+          city: Database['public']['Enums']['cities']
           cnic: string | null
+          created_at: string
           dob: string | null
           first_name: string | null
-          full_name: string | null
-          gender: string | null
+          gender: Database['public']['Enums']['genders'] | null
           id: string
+          is_active: boolean
           last_name: string | null
-          province: string | null
+          province: Database['public']['Enums']['provinces']
+          updated_at: string
         }
         Insert: {
           address?: string | null
           avatar_url?: string | null
-          blood_group?: string | null
-          city?: string | null
+          city?: Database['public']['Enums']['cities']
           cnic?: string | null
+          created_at?: string
           dob?: string | null
           first_name?: string | null
-          full_name?: string | null
-          gender?: string | null
-          id: string
+          gender?: Database['public']['Enums']['genders'] | null
+          id?: string
+          is_active?: boolean
           last_name?: string | null
-          province?: string | null
+          province?: Database['public']['Enums']['provinces']
+          updated_at?: string
         }
         Update: {
           address?: string | null
           avatar_url?: string | null
-          blood_group?: string | null
-          city?: string | null
+          city?: Database['public']['Enums']['cities']
           cnic?: string | null
+          created_at?: string
           dob?: string | null
           first_name?: string | null
-          full_name?: string | null
-          gender?: string | null
+          gender?: Database['public']['Enums']['genders'] | null
           id?: string
+          is_active?: boolean
           last_name?: string | null
-          province?: string | null
+          province?: Database['public']['Enums']['provinces']
+          updated_at?: string
         }
         Relationships: []
       }
@@ -1313,7 +1416,30 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      cities:
+        | 'Jhang'
+        | 'Lahore'
+        | 'Islamabad'
+        | 'Multan'
+        | 'Karachi'
+        | 'Chiniot'
+        | 'Toba'
+        | 'Sargodha'
+        | 'Sahiwal'
+        | 'Other'
+      class_groups: 'Matriculation' | 'Intermediate'
+      classes: '9th' | '10th' | '11th' | '12th'
+      genders: 'Male' | 'Female'
+      provinces: 'Punjab' | 'Sindh' | 'Balochistan' | 'KPK'
+      ratings: '1' | '2' | '3' | '4' | '5'
+      subject_groups:
+        | 'Science'
+        | 'Arts'
+        | 'Pre-Medical'
+        | 'Pre-Engineering'
+        | 'Computer Science (ICS)'
+        | 'Commerce (I.Com)'
+        | 'Diploma (Any Field)'
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1460,6 +1586,33 @@ export const Constants = {
     }
   },
   public: {
-    Enums: {}
+    Enums: {
+      cities: [
+        'Jhang',
+        'Lahore',
+        'Islamabad',
+        'Multan',
+        'Karachi',
+        'Chiniot',
+        'Toba',
+        'Sargodha',
+        'Sahiwal',
+        'Other'
+      ],
+      class_groups: ['Matriculation', 'Intermediate'],
+      classes: ['9th', '10th', '11th', '12th'],
+      genders: ['Male', 'Female'],
+      provinces: ['Punjab', 'Sindh', 'Balochistan', 'KPK'],
+      ratings: ['1', '2', '3', '4', '5'],
+      subject_groups: [
+        'Science',
+        'Arts',
+        'Pre-Medical',
+        'Pre-Engineering',
+        'Computer Science (ICS)',
+        'Commerce (I.Com)',
+        'Diploma (Any Field)'
+      ]
+    }
   }
 } as const

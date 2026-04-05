@@ -76,6 +76,7 @@ const computedFields = computed(() => {
           :orientation="field.orientation || 'vertical'"
           :ui="field.ui"
           :class="field.class"
+          class="text-muted"
         >
           <!-- Custom item slot for specialized rendering -->
           <slot
@@ -115,7 +116,6 @@ const computedFields = computed(() => {
                 />
                 <span
                   v-if="field.placeholder"
-                  class="text-sm text-zinc-500"
                 >{{ field.placeholder }}</span>
               </div>
             </template>
@@ -155,11 +155,12 @@ const computedFields = computed(() => {
           v-if="!props.hideActions"
           :label="props.submitLabel"
           :loading="props.loading"
+          loading-auto
           color="primary"
           variant="soft"
           size="xl"
           block
-          class="rounded-xl font-bold"
+          class="rounded-xl font-bold hover:cursor-pointer"
           type="submit"
         />
       </slot>

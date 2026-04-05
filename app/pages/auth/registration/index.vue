@@ -36,7 +36,7 @@ const providers = [{
 }]
 
 const schema = z.object({
-  email: z.string().email('Invalid email'),
+  email: z.email('Invalid email'),
   password1: z.string().min(8, 'Must be at least 8 characters'),
   password2: z.string().min(8, 'Must be at least 8 characters')
 }).refine((data) => {
@@ -49,7 +49,11 @@ const schema = z.object({
 type Schema = z.output<typeof schema>
 
 function onSubmit(payload: FormSubmitEvent<Schema>) {
-  authStore.register(payload.data, URLS.auth.login)
+  const data = {
+    email: payload.data.email,
+    password: payload.data.password1
+  }
+  authStore.register(data, URLS.auth.login)
 }
 </script>
 
@@ -57,16 +61,16 @@ function onSubmit(payload: FormSubmitEvent<Schema>) {
   <UContainer class="w-full grid items-center py-16">
     <UPageCard class="w-full max-w-md mx-auto">
       <UAuthForm
+        title="Signup"
         :schema="schema"
         :fields="fields"
         :providers="providers"
-        title="Signup"
         :icon="ICONS.nav.user"
         :loading="layoutStore.isLoading"
         :submit="{
           label: 'Register'
         }"
-        @submit="onSubmit"
+        :on-submit="onSubmit"
       >
         <template #description>
           <p>

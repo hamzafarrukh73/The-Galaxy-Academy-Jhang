@@ -1,21 +1,21 @@
 import type { Database } from '~/types/database.types'
+import { createRepository } from '~/repository/index'
+
+export type NuxtSupabaseClient = ReturnType<typeof useSupabaseClient<Database>>
 
 export default defineNuxtPlugin(() => {
-  const api = useSupabaseClient<Database>()
+  const client = useSupabaseClient<Database>()
+  const repository = createRepository(client)
 
-  const supabaseRequest = async <T>(promise: PromiseLike<{ data?: T | null, error: unknown }>): Promise<T> => {
-    const result = await promise
-    if (result.error) {
-      const { $parseError } = useNuxtApp()
-      throw $parseError(result.error)
-    }
-    return result.data as T
-  }
+  const user = useSupabaseUser()
+  const session = useSupabaseSession()
+
+  const isAuthenticated = computed(() => !!user.value && !!session.value)
 
   return {
     provide: {
-      api,
-      supabaseRequest
+      api: repository,
+      isAuthenticated: isAuthenticated
     }
   }
 })

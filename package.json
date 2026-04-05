@@ -13,12 +13,12 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@iconify-json/lucide": "^1.2.98",
-    "@iconify-json/simple-icons": "^1.2.74",
-    "@nuxt/ui": "^4.5.1",
+    "@iconify-json/lucide": "^1.2.101",
+    "@iconify-json/simple-icons": "^1.2.76",
+    "@nuxt/ui": "^4.6.0",
     "@pinia/nuxt": "^0.11.3",
     "@nuxtjs/supabase": "^2.0.4",
-    "@supabase/supabase-js": "^2.99.2",
+    "@supabase/supabase-js": "^2.101.1",
     "nuxt": "^4.4.2",
     "tailwindcss": "^4.2.2",
     "zod": "^4.3.6"
@@ -29,7 +29,7 @@
     "husky": "^8.0.3",
     "lint-staged": "^16.4.0",
     "openapi-typescript": "^7.13.0",
-    "supabase": "^2.81.3",
+    "supabase": "^2.84.5",
     "supazod": "^4.5.0",
     "typescript": "^5.9.3",
     "vue-tsc": "^3.2.6"

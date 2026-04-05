@@ -2,35 +2,59 @@
 import {
   identitySchema,
   guardianSchema,
-  emergencySchema,
   addressSchema
 } from '~/schemas/dashboard/personal'
+import type { Users } from '~/repository/modules/users'
+import type { Guardians } from '~/repository/modules/guardians'
 
 definePageMeta({
   layout: 'dashboard',
   auth: 'private'
 })
 
-const profileStore = useProfileStore()
+const usersStore = useUsersStore()
 const guardianStore = useGuardianStore()
+
+const userState = ref<Users['Update']>({
+  first_name: '',
+  last_name: '',
+  cnic: '',
+  dob: '',
+  gender: undefined,
+  address: '',
+  city: undefined,
+  province: undefined,
+  avatar_url: ''
+})
+
+const guardianState = ref<Guardians['Update']>({
+  name: '',
+  relationship: '',
+  phone: '',
+  email: ''
+})
 
 const loadData = async () => {
   await Promise.all([
-    profileStore.getProfile(),
+    usersStore.getUser(),
     guardianStore.getGuardian()
   ])
+  userState.value = { ...usersStore.user }
+  guardianState.value = { ...guardianStore.guardian }
 }
 
 onMounted(() => {
   loadData()
 })
 
-const onSaveProfile = async () => {
-  await profileStore.upsertProfile()
+const onSaveUser = async () => {
+  await usersStore.upsertUser({ ...userState.value })
+  userState.value = { ...usersStore.user }
 }
 
 const onSaveGuardian = async () => {
-  await guardianStore.upsertGuardian()
+  await guardianStore.upsertGuardian(guardianState.value)
+  guardianState.value = { ...guardianStore.guardian }
 }
 </script>
 
@@ -38,7 +62,7 @@ const onSaveGuardian = async () => {
   <UPage>
     <UPageHeader
       title="Personal Information"
-      description="Maintain your profile and guardian details for academic records."
+      description="Maintain your profile and guardian details for student records."
       :icon="ICONS.nav.user"
     />
 
@@ -56,10 +80,10 @@ const onSaveGuardian = async () => {
                 class="flex flex-col items-center gap-4 size-full p-4"
               >
                 <UAvatar
-                  :src="profileStore.displayAvatarUrl"
+                  :src="usersStore.displayAvatarUrl || ''"
                   :icon="ICONS.nav.user"
                   class="size-[25vh] aspect-square"
-                  :class="profileStore.displayAvatarUrl ? '' : 'p-8'"
+                  :class="usersStore.displayAvatarUrl ? '' : 'p-8'"
                   :ui="{
                     icon: 'size-full'
                   }"
@@ -67,8 +91,9 @@ const onSaveGuardian = async () => {
                 <UInput
                   type="file"
                   accept="image/png, image/jpg, image/jpeg"
-                  :disabled="profileStore.avatarUploading"
-                  @change="profileStore.handleAvatarSelect"
+                  :loading="usersStore.avatarUploading"
+                  :disabled="usersStore.avatarUploading"
+                  @change="usersStore.handleAvatarSelect"
                 />
               </UFileUpload>
             </div>
@@ -81,7 +106,8 @@ const onSaveGuardian = async () => {
                 size="xl"
                 block
                 class="rounded-xl font-bold"
-                @click="onSaveProfile"
+                :loading="usersStore.avatarUploading"
+                @click="onSaveUser"
               />
             </div>
           </div>
@@ -94,10 +120,10 @@ const onSaveGuardian = async () => {
           class="lg:col-span-2 h-full"
         >
           <AppForm
-            :state="profileStore.profile"
+            :state="userState"
             :schema="identitySchema"
             submit-label="Save Identity"
-            @submit="onSaveProfile"
+            @submit="onSaveUser"
           />
         </UPageCard>
 
@@ -105,27 +131,13 @@ const onSaveGuardian = async () => {
         <UPageCard
           title="Guardian Info"
           :icon="ICONS.nav.users"
-          class="lg:col-span-2 h-full"
+          class="lg:col-span-3 h-full"
         >
           <AppForm
-            :state="guardianStore.guardian"
+            :state="guardianState"
             :schema="guardianSchema"
+            grid-class="grid grid-cols-1 md:grid-cols-2 gap-4"
             submit-label="Save Guardian Info"
-            @submit="onSaveGuardian"
-          />
-        </UPageCard>
-
-        <!-- Card 4: Emergency Contact -->
-        <UPageCard
-          title="Emergency Contact"
-          :icon="ICONS.action.call"
-          class="h-full"
-        >
-          <AppForm
-            :state="guardianStore.guardian"
-            :schema="emergencySchema"
-            grid-class="grid grid-cols-1 gap-4"
-            submit-label="Save Emergency Contact"
             @submit="onSaveGuardian"
           />
         </UPageCard>
@@ -137,9 +149,9 @@ const onSaveGuardian = async () => {
           class="h-full lg:col-span-3"
         >
           <AppForm
-            :state="profileStore.profile"
+            :state="userState"
             :schema="addressSchema"
-            @submit="onSaveProfile"
+            @submit="onSaveUser"
           />
         </UPageCard>
       </UPageGrid>

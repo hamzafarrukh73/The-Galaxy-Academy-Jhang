@@ -1,26 +1,27 @@
 export default defineNuxtRouteMiddleware(async (to, from) => {
   const toast = useToast()
+  const { $isAuthenticated } = useNuxtApp()
   const authStore = useAuthStore()
 
   const pageAuth = to.meta.auth || 'public'
   const requiredRole = to.meta.requiredRole || false
   const userRole = 'anonymous'
 
-  // If user is not authenticated then try again to get session
-  // if (!authStore.isAuthenticated) {
+  let sessionExists = $isAuthenticated.value
 
-  // }
+  // Check session validity (checks if expired or fetches on refresh)
+  sessionExists = await authStore.verifySession()
 
   // User is authenticated then block the auth pages
-  if (authStore.isAuthenticated && to.path.includes('auth')) {
+  if (sessionExists && to.path.includes('auth')) {
     return navigateTo(URLS.dashboard.home)
   }
 
   // If page requires authentication and user still not authenticated, redirect
-  if (pageAuth !== 'public' && !authStore.isAuthenticated) {
+  if (!sessionExists && pageAuth !== 'public') {
     toast.add({
-      title: 'Authentication Required',
-      description: 'Please log in to continue.',
+      title: 'Authentication Error',
+      description: `Please log in to continue. Session: ${sessionExists}`,
       color: 'error',
       duration: 3000
     })
@@ -28,13 +29,13 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   }
 
   // If no required role then pass role check
-  if (requiredRole === false) return
+  if (!requiredRole) return
 
   // Check if user has required role
   if (userRole !== requiredRole) {
     toast.add({
-      title: 'Access Denied',
-      description: 'You do not have the required permission to access this resource.',
+      title: 'Authentication Error',
+      description: 'Access Denied.',
       color: 'error',
       duration: 3000
     })
