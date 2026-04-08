@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import type { Students } from '~/repository/modules/students'
 import type { Activities } from '~/repository/modules/activities'
-import type { Tables } from '~/repository/index'
 
 import {
   currentStudentSchema
@@ -19,39 +18,47 @@ definePageMeta({
 
 const studentsStore = useStudentsStore()
 const activitiesStore = useActivitiesStore()
-
-const { $api } = useNuxtApp()
+const subjectsStore = useSubjectsStore()
 
 const studentState = ref<Students['Update']>({
   school: '',
   class: undefined,
   subject_group: undefined
 })
-const activitiesState = ref<Activities['Update'] & { subject_ranking?: { name: string, liking: number }[] }>({
+const activitiesState = ref<Activities['Update']>({
   career_goal: '',
+  career_motivation: '',
   hobby: '',
   role_model: '',
   is_hafiz: false,
-  want_job: false,
+  want_job: false
+})
+const ratingsState = ref<{ subject_ranking: { subject_id: string, name: string, rating: number }[] }>({
   subject_ranking: []
 })
 
 const loadData = async () => {
-  const [_, __, subjectsRes] = await Promise.all([
+  await Promise.all([
     studentsStore.getStudent(),
     activitiesStore.getActivities(),
-    $api.subjects.list()
+    subjectsStore.getSubjects(),
+    subjectsStore.getRatings()
   ])
 
   studentState.value = { ...studentState.value, ...studentsStore.student }
   activitiesState.value = { ...activitiesState.value, ...activitiesStore.activities }
 
-  if (!activitiesState.value.subject_ranking || activitiesState.value.subject_ranking.length === 0) {
-    activitiesState.value.subject_ranking = (subjectsRes as Tables['subjects']['Row'][]).map(s => ({
-      name: s.name,
-      liking: 3
-    }))
-  }
+  const dbSubjects = subjectsStore.subjects
+  const dbRatings = subjectsStore.ratings
+
+  ratingsState.value.subject_ranking = dbSubjects.map((subject) => {
+    const ratingRec = dbRatings.find(r => r.subject_id === subject.id)
+    return {
+      subject_id: subject.id,
+      name: subject.name,
+      rating: ratingRec?.rating ? Number(ratingRec.rating) : 3
+    }
+  })
 }
 
 onMounted(() => {
@@ -65,13 +72,17 @@ const onSaveStudent = async () => {
 const onSaveActivities = async () => {
   await activitiesStore.upsertActivities(activitiesState.value)
 }
+
+const onSaveRatings = async () => {
+  await subjectsStore.upsertRatings(ratingsState.value.subject_ranking)
+}
 </script>
 
 <template>
   <UPage>
     <UPageHeader
-      title="Student Records & Activities"
-      description="Manage your enrollment, educational background, and learning goals."
+      title="Student Details"
+      description="Manage your academic profile and learning goals."
       :icon="ICONS.nav.education"
     />
 
@@ -79,7 +90,7 @@ const onSaveActivities = async () => {
       <UPageGrid>
         <!-- Card 1: Academic Info -->
         <UPageCard
-          title="Academic Info"
+          title="Academic Profile"
           :icon="ICONS.nav.education"
           class="h-full lg:col-span-1"
         >
@@ -115,15 +126,15 @@ const onSaveActivities = async () => {
           class="lg:col-span-3"
         >
           <AppForm
-            :state="activitiesState"
+            :state="ratingsState"
             :schema="subjectRatingSchema"
             submit-label="Save Ratings"
-            @submit="onSaveActivities"
+            @submit="onSaveRatings"
           >
             <template #field-subject_ranking>
               <div class="space-y-8 w-full px-1">
                 <div
-                  v-for="subject in activitiesState.subject_ranking"
+                  v-for="subject in ratingsState.subject_ranking"
                   :key="subject.name"
                   class="flex flex-col gap-2"
                 >
@@ -132,11 +143,11 @@ const onSaveActivities = async () => {
                     <span
                       class="text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-primary-500/10 text-primary-500"
                     >
-                      {{ ['Not at all', 'Dislike', 'Neutral', 'Like', 'Love'][subject.liking - 1] }}
+                      {{ ['Not at all', 'Dislike', 'Neutral', 'Like', 'Love'][subject.rating - 1] }}
                     </span>
                   </div>
                   <USlider
-                    v-model="subject.liking"
+                    v-model="subject.rating"
                     :min="1"
                     :max="5"
                     :step="1"

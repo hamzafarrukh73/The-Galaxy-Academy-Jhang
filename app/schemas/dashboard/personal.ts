@@ -10,18 +10,19 @@ export const identitySchema = z.object({
 })
 
 export const guardianSchema = z.object({
-  name: z.string().optional().meta({ label: 'Guardian Name', placeholder: 'Enter guardian\'s full name' }),
+  name: z.string().nullable().optional().meta({ label: 'Guardian Name', placeholder: 'Enter guardian\'s full name' }),
   relationship: z.string().optional().meta({ label: 'Relationship', type: 'select', items: [...OPTIONS.relationships] }),
   cnic: z.string().optional().meta({ label: 'CNIC', placeholder: '33202-1234567-1' }),
   email: z.email('Invalid email address').optional().or(z.literal('')).meta({ label: 'Email Address', type: 'email', placeholder: 'guardian@example.com' }),
-  phone: z.string().optional().meta({ label: 'Mobile Number', placeholder: '03xx-xxxxxxx' }),
-  is_whatsapp: z.boolean().meta({ label: 'WhatsApp Availability', type: 'switch', placeholder: 'Available on WhatsApp', class: 'flex flex-col justify-end' })
+  phone: z.string().optional().meta({ label: 'Phone Number', placeholder: 'xxxx-xxxxxxx' }),
+  is_whatsapp: z.boolean().optional().meta({ label: 'Is this a whatsapp number? ', type: 'switch', orientation: 'horizontal', class: 'flex justify-between items-center text-muted' })
 })
 
 export const emergencySchema = z.object({
-  emergency_name: z.string().optional().meta({ label: 'Contact Person Name', placeholder: 'Enter name' }),
-  emergency_phone: z.string().optional().meta({ label: 'Mobile Number', placeholder: '03xx-xxxxxxx' }),
-  emergency_relationship: z.string().optional().meta({ label: 'Relationship', type: 'select', items: [...OPTIONS.relationships] })
+  name: z.string().optional().meta({ label: 'Name', placeholder: 'Enter name' }),
+  relationship: z.string().optional().meta({ label: 'Relationship', type: 'select', items: [...OPTIONS.relationships] }),
+  phone: z.string().optional().meta({ label: 'Phone Number', placeholder: 'xxxx-xxxxxxx' }),
+  is_whatapp: z.boolean().optional().meta({ label: 'Is this a whatsapp number? ', type: 'switch', placeholder: ' ', orientation: 'horizontal', class: 'flex justify-between items-center text-muted' })
 })
 
 export const addressSchema = z.object({

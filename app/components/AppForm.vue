@@ -74,9 +74,11 @@ const computedFields = computed(() => {
           :name="field.key"
           :description="field.description"
           :orientation="field.orientation || 'vertical'"
-          :ui="field.ui"
+          :ui="{
+            label: 'text-muted tracking-wider',
+            ...field.ui
+          }"
           :class="field.class"
-          class="text-muted"
         >
           <!-- Custom item slot for specialized rendering -->
           <slot
@@ -108,26 +110,20 @@ const computedFields = computed(() => {
 
             <!-- Switch (Toggle) -->
             <template v-else-if="field.type === 'switch'">
-              <div class="flex items-center gap-2 h-10">
-                <USwitch
-                  v-model="(state[field.key as keyof T] as boolean)"
-                  v-bind="field.props"
-                  color="primary"
-                />
-                <span
-                  v-if="field.placeholder"
-                >{{ field.placeholder }}</span>
-              </div>
+              <USwitch
+                v-model="(state[field.key as keyof T] as boolean)"
+                v-bind="field.props"
+                color="primary"
+              />
             </template>
 
             <!-- Slider -->
             <template v-else-if="field.type === 'slider'">
-              <div class="w-full py-2">
-                <USlider
-                  v-model="(state[field.key as keyof T] as number)"
-                  v-bind="field.props"
-                />
-              </div>
+              <USlider
+                v-model="(state[field.key as keyof T] as number)"
+                v-bind="field.props"
+                class="w-full py-2"
+              />
             </template>
 
             <!-- Default Input -->

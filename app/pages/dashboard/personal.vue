@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import {
   identitySchema,
-  guardianSchema,
+  emergencySchema,
   addressSchema
 } from '~/schemas/dashboard/personal'
 import type { Users } from '~/repository/modules/users'
-import type { Guardians } from '~/repository/modules/guardians'
+import type { EmergencyContacts } from '~/repository/modules/emergency_contacts'
 
 definePageMeta({
   layout: 'dashboard',
@@ -13,7 +13,8 @@ definePageMeta({
 })
 
 const usersStore = useUsersStore()
-const guardianStore = useGuardianStore()
+const studentsStore = useStudentsStore()
+const emergencyStore = useEmergencyStore()
 
 const userState = ref<Users['Update']>({
   first_name: '',
@@ -27,20 +28,22 @@ const userState = ref<Users['Update']>({
   avatar_url: ''
 })
 
-const guardianState = ref<Guardians['Update']>({
+const emergencyState = ref<EmergencyContacts['Update']>({
   name: '',
-  relationship: '',
+  relationship: undefined,
   phone: '',
-  email: ''
+  is_whatapp: false
 })
 
 const loadData = async () => {
   await Promise.all([
     usersStore.getUser(),
-    guardianStore.getGuardian()
+    studentsStore.getStudent()
   ])
+  await emergencyStore.getContact()
+
   userState.value = { ...usersStore.user }
-  guardianState.value = { ...guardianStore.guardian }
+  emergencyState.value = { ...emergencyStore.contact }
 }
 
 onMounted(() => {
@@ -52,17 +55,17 @@ const onSaveUser = async () => {
   userState.value = { ...usersStore.user }
 }
 
-const onSaveGuardian = async () => {
-  await guardianStore.upsertGuardian(guardianState.value)
-  guardianState.value = { ...guardianStore.guardian }
+const onSaveEmergency = async () => {
+  await emergencyStore.upsertContact(emergencyState.value)
+  emergencyState.value = { ...emergencyStore.contact }
 }
 </script>
 
 <template>
   <UPage>
     <UPageHeader
-      title="Personal Information"
-      description="Maintain your profile and guardian details for student records."
+      title="Personal Details"
+      description="Maintain your profile and guardian details for records."
       :icon="ICONS.nav.user"
     />
 
@@ -134,11 +137,11 @@ const onSaveGuardian = async () => {
           class="lg:col-span-3 h-full"
         >
           <AppForm
-            :state="guardianState"
-            :schema="guardianSchema"
+            :state="emergencyState"
+            :schema="emergencySchema"
             grid-class="grid grid-cols-1 md:grid-cols-2 gap-4"
             submit-label="Save Guardian Info"
-            @submit="onSaveGuardian"
+            @submit="onSaveEmergency"
           />
         </UPageCard>
 

@@ -61,7 +61,7 @@ export const useLandingStore = defineStore('landingStore', () => {
         'Islamiyat'
       ],
       button: {
-        label: 'Register Now',
+        label: 'Start Now',
         to: URLS.auth.registration.home
       }
     }, {
@@ -76,7 +76,7 @@ export const useLandingStore = defineStore('landingStore', () => {
         'Computer Science'
       ],
       button: {
-        label: 'Register Now',
+        label: 'Start Now',
         to: URLS.auth.registration.home
       }
     }, {
@@ -96,7 +96,7 @@ export const useLandingStore = defineStore('landingStore', () => {
         'Computer Science'
       ],
       button: {
-        label: 'Register Now',
+        label: 'Start Now',
         to: URLS.auth.registration.home
       }
     }
@@ -113,7 +113,7 @@ export const useLandingStore = defineStore('landingStore', () => {
         'Islamiyat'
       ],
       button: {
-        label: 'Register Now',
+        label: 'Start Now',
         to: URLS.auth.registration.home
       }
     }, {
@@ -128,7 +128,7 @@ export const useLandingStore = defineStore('landingStore', () => {
         'Computer Science'
       ],
       button: {
-        label: 'Register Now',
+        label: 'Start Now',
         to: URLS.auth.registration.home
       }
     }, {
@@ -148,7 +148,7 @@ export const useLandingStore = defineStore('landingStore', () => {
         'Computer Science'
       ],
       button: {
-        label: 'Register Now',
+        label: 'Start Now',
         to: URLS.auth.registration.home
       }
     }

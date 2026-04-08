@@ -1,14 +1,4 @@
 <script lang="ts" setup>
-/**
- * Dashboard Overview
- *
- * Shows a live preview of the student admission record.
- * Print is triggered via a hidden iframe loading the dedicated print route.
- */
-
-import DashboardPrintTemplate from '~/components/dashboard/PrintTemplate.vue'
-import DashboardInstantPrintableProfile from '~/components/dashboard/InstantPrintableProfile.vue'
-
 definePageMeta({
   layout: 'dashboard',
   auth: 'private',
@@ -19,10 +9,8 @@ definePageMeta({
 const usersStore = useUsersStore()
 const studentsStore = useStudentsStore()
 const activitiesStore = useActivitiesStore()
-const guardianStore = useGuardianStore()
-
-const templateRef = ref<InstanceType<typeof DashboardPrintTemplate> | null>(null)
-const printableProfileRef = ref<InstanceType<typeof DashboardInstantPrintableProfile> | null>(null)
+const emergencyStore = useEmergencyStore()
+const subjectsStore = useSubjectsStore()
 
 // Data fetching
 onMounted(async () => {
@@ -30,45 +18,32 @@ onMounted(async () => {
     usersStore.getUser(),
     studentsStore.getStudent(),
     activitiesStore.getActivities(),
-    guardianStore.getGuardian()
+    emergencyStore.getContact(),
+    subjectsStore.getSubjects(),
+    subjectsStore.getRatings()
   ])
-
-  if (templateRef.value) {
-    await templateRef.value.prepareData()
-  }
 })
 
 // Profile completion calculation
 const profileCompletion = computed<number>(() => {
-  const p = usersStore.user
-  const a = studentsStore.student
-  const i = activitiesStore.activities
+  const stores = [
+    usersStore,
+    studentsStore,
+    activitiesStore,
+    emergencyStore,
+    subjectsStore
+  ]
 
-  if (!p || !a || !i) return 0
+  const totalFilled = stores.reduce((acc, s) => acc + s.completion.filled, 0)
+  const totalFields = stores.reduce((acc, s) => acc + s.completion.total, 0)
 
-  let filledFields = 0
-
-  const pFields = ['first_name', 'last_name', 'cnic', 'dob', 'address', 'city', 'province', 'avatar_url'] as const
-  const aFields = ['school', 'class', 'subject_group'] as const
-  const iFields = ['career_goal'] as const
-
-  const totalFields = pFields.length + aFields.length + iFields.length
-
-  pFields.forEach((f) => {
-    if (p[f]) filledFields++
-  })
-  aFields.forEach((f) => {
-    if (a[f]) filledFields++
-  })
-  iFields.forEach((f) => {
-    if (i[f]) filledFields++
-  })
-
-  return totalFields > 0 ? Math.round((filledFields / totalFields) * 100) : 0
+  return totalFields > 0 ? Math.round((totalFilled / totalFields) * 100) : 0
 })
 
+const printProfileRef = ref<{ printProfile: () => void } | null>(null)
+
 const downloadPdf = () => {
-  printableProfileRef.value?.printProfile()
+  printProfileRef.value?.printProfile()
 }
 </script>
 
@@ -91,19 +66,30 @@ const downloadPdf = () => {
           size="xl"
           color="primary"
           variant="solid"
-          class="rounded-xl"
+          class="rounded-xl hover:cursor-pointer"
+          :disabled="profileCompletion < 100"
           @click="downloadPdf"
         />
       </div>
+      <p
+        v-if="profileCompletion < 100"
+        class="text-muted"
+      >
+        Complete profile to unlock download.
+      </p>
+      <p
+        v-else
+        class="text-muted"
+      >
+        Profile completed! You can now download your profile.
+      </p>
     </UPageHeader>
 
     <UPageBody>
-      <DashboardPrintTemplate
-        ref="templateRef"
-        mode="preview"
-      />
+      <DashboardDisplayProfile />
     </UPageBody>
 
-    <DashboardInstantPrintableProfile ref="printableProfileRef" />
+    <!-- Hidden print template -->
+    <DashboardPrintProfile ref="printProfileRef" />
   </UPage>
 </template>

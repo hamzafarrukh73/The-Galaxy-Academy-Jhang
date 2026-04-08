@@ -6,8 +6,18 @@ export const useGuardianStore = defineStore('guardianStore', () => {
   const toast = useToast()
   const { $formatError, $api } = useNuxtApp()
 
-  const guardianFetched = ref(false)
   const guardian = ref<Guardians['Row'] | null>(null)
+  const guardianFetched = ref(false)
+
+  const completion = computed(() => {
+    const fields = ['name', 'cnic', 'phone', 'relationship'] as const
+    const filled = fields.filter(f => !!guardian.value?.[f]).length
+    return {
+      filled,
+      total: fields.length,
+      percentage: Math.round((filled / fields.length) * 100)
+    }
+  })
 
   const getGuardian = async () => {
     const authStore = useAuthStore()
@@ -56,6 +66,7 @@ export const useGuardianStore = defineStore('guardianStore', () => {
 
   return {
     guardian,
+    completion,
     getGuardian,
     upsertGuardian,
     clearData

@@ -9,6 +9,16 @@ export const useStudentsStore = defineStore('studentsStore', () => {
   const studentFetched = ref(false)
   const student = ref<Students['Row'] | null>(null)
 
+  const completion = computed(() => {
+    const fields = ['school', 'class', 'subject_group'] as const
+    const filled = fields.filter(f => !!student.value?.[f]).length
+    return {
+      filled,
+      total: fields.length,
+      percentage: Math.round((filled / fields.length) * 100)
+    }
+  })
+
   const getStudent = async () => {
     const authStore = useAuthStore()
     if (studentFetched.value || !authStore.userId) return
@@ -54,6 +64,7 @@ export const useStudentsStore = defineStore('studentsStore', () => {
 
   return {
     student,
+    completion,
     getStudent,
     upsertStudent,
     clearData

@@ -12,6 +12,7 @@ const navItems = useNavigation()
       :title="layoutStore.websiteTitle"
       toggle-side="right"
       :menu="{ side: 'right' }"
+      class="shadow-2xl shadow-primary-500/20"
     >
       <template #title>
         <AppLogo />

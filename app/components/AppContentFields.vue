@@ -13,10 +13,10 @@ const props = withDefaults(defineProps<{
 
   class?: string
   /** Items to display */
-  items: PageFeatureProps[]
+  items?: PageFeatureProps[]
 }>(), {
   columns: 1,
-  class: 'mx-1 gap-4'
+  class: 'gap-4 mx-1'
 })
 
 /**
@@ -26,7 +26,9 @@ const props = withDefaults(defineProps<{
 const gridColsClass = computed(() => {
   const cols = Number(props.columns)
   if (cols === 1) return 'grid-cols-1!'
-  return `grid-cols-${cols}! lg:grid-cols-${cols}!`
+  if (cols === 2) return 'grid-cols-2!'
+  if (cols === 4) return 'grid-cols-4!'
+  return `grid-cols-3! lg:grid-cols-3!`
 })
 
 /**
@@ -42,14 +44,14 @@ const formatValue = (val: unknown): string => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-4">
+  <div class="flex flex-col gap-4  w-full">
     <!-- Optional Section Header -->
     <UPageFeature
       v-if="props.title || props.icon"
       :title="props.title"
       :icon="props.icon"
       :ui="{
-        root: 'flex items-center',
+        root: 'flex items-start',
         title: 'text-xl'
       }"
     />
@@ -62,12 +64,15 @@ const formatValue = (val: unknown): string => {
         base: gridColsClass
       }"
     >
-      <UPageFeature
-        v-for="item in props.items"
-        :key="item.title"
-        v-bind="item"
-        :description="formatValue(item.description)"
-      />
+      <slot>
+        <UPageFeature
+
+          v-for="item in props.items"
+          :key="item.title"
+          v-bind="item"
+          :description="formatValue(item.description)"
+        />
+      </slot>
     </UPageGrid>
   </div>
 </template>

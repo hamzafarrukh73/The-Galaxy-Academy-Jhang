@@ -1,5 +1,4 @@
 import type { Activities } from '~/repository/modules/activities'
-
 import type { ApiError } from '~/plugins/errors'
 
 export const useActivitiesStore = defineStore('activitiesStore', () => {
@@ -8,6 +7,16 @@ export const useActivitiesStore = defineStore('activitiesStore', () => {
 
   const activitiesFetched = ref(false)
   const activities = ref<Activities['Row'] | null>(null)
+
+  const completion = computed(() => {
+    const fields = ['career_goal'] as const
+    const filled = fields.filter(f => !!activities.value?.[f]).length
+    return {
+      filled,
+      total: fields.length,
+      percentage: Math.round((filled / fields.length) * 100)
+    }
+  })
 
   const getActivities = async () => {
     const authStore = useAuthStore()
@@ -46,14 +55,14 @@ export const useActivitiesStore = defineStore('activitiesStore', () => {
       const studentId = studentsStore.student?.id
       if (!studentId) throw new Error('Student Profile must be created first.')
 
-      const { subject_ranking: _, inspiration: __, ...reqPayload } = {
+      const reqPayload = {
         ...updates,
         student_id: studentId
-      } as Activities['Update'] & { subject_ranking?: unknown, inspiration?: unknown }
+      } as Activities['Insert']
 
       if (activities.value?.id) reqPayload.id = activities.value.id
 
-      const data = await $api.activities.upsert(reqPayload as Activities['Insert'])
+      const data = await $api.activities.upsert(reqPayload)
 
       activities.value = data
       toast.add({ title: 'Success', description: 'Activities Updated', color: 'success' })
@@ -71,6 +80,7 @@ export const useActivitiesStore = defineStore('activitiesStore', () => {
 
   return {
     activities,
+    completion,
     getActivities,
     upsertActivities,
     clearData

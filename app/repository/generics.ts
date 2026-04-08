@@ -33,8 +33,17 @@ export class GenericAPI<T extends keyof Tables> extends BaseRepository {
     sortBy?: string
     ascending?: boolean
     offset?: number
+    filters?: Record<string, unknown>
   } = {}): Promise<Tables[T]['Row'][]> {
     let query = this.query.select(options.select || '*')
+
+    if (options.filters) {
+      Object.entries(options.filters).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          query = query.eq(key as never, value)
+        }
+      })
+    }
 
     if (options.sortBy) {
       query = query.order(options.sortBy as never, { ascending: options.ascending ?? true })
@@ -82,6 +91,26 @@ export class GenericAPI<T extends keyof Tables> extends BaseRepository {
   async upsert(data: Tables[T]['Insert']): Promise<Tables[T]['Row']> {
     return await this.request<Tables[T]['Row']>(
       this.query.upsert(data as never).select().single()
+    )
+  }
+
+  /**
+   * Upsert many records
+   */
+  async upsertMany(
+    data: Tables[T]['Insert'][],
+    options: {
+      onConflict?: string | undefined
+      ignoreDuplicates?: boolean | undefined
+      count?: 'exact' | 'planned' | 'estimated' | undefined
+    } = {
+      onConflict: undefined,
+      ignoreDuplicates: undefined,
+      count: undefined
+    }
+  ): Promise<Tables[T]['Row'][]> {
+    return await this.request<Tables[T]['Row'][]>(
+      this.query.upsert(data as never, options).select()
     )
   }
 

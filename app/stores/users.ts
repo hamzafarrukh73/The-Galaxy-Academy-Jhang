@@ -14,6 +14,16 @@ export const useUsersStore = defineStore('usersStore', () => {
 
   const displayAvatarUrl = ref(user.value?.avatar_url)
 
+  const completion = computed(() => {
+    const fields = ['first_name', 'last_name', 'cnic', 'dob', 'address', 'city', 'province', 'avatar_url'] as const
+    const filled = fields.filter(f => !!user.value?.[f]).length
+    return {
+      filled,
+      total: fields.length,
+      percentage: Math.round((filled / fields.length) * 100)
+    }
+  })
+
   const getUser = async () => {
     const authStore = useAuthStore()
     if (userFetched.value || !authStore.userId) return
@@ -142,6 +152,7 @@ export const useUsersStore = defineStore('usersStore', () => {
     user,
     avatarUploading,
     displayAvatarUrl,
+    completion,
     getUser,
     upsertUser,
     handleAvatarSelect,

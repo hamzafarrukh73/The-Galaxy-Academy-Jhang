@@ -54,7 +54,7 @@ const profileMenu = computed<DropdownMenuItem[]>(() => {
         ui: {
           icon: 'size-full'
         },
-        class: 'size-[5vh]'
+        class: 'size-[3vh] lg:size-[5vh]'
       }"
       variant="outline"
       color="neutral"

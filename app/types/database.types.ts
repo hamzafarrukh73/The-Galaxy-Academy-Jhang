@@ -1126,6 +1126,7 @@ export type Database = {
       activities: {
         Row: {
           career_goal: string | null
+          career_motivation: string | null
           created_at: string
           hobby: string | null
           id: string
@@ -1137,6 +1138,7 @@ export type Database = {
         }
         Insert: {
           career_goal?: string | null
+          career_motivation?: string | null
           created_at?: string
           hobby?: string | null
           id?: string
@@ -1148,6 +1150,7 @@ export type Database = {
         }
         Update: {
           career_goal?: string | null
+          career_motivation?: string | null
           created_at?: string
           hobby?: string | null
           id?: string
@@ -1167,38 +1170,40 @@ export type Database = {
           }
         ]
       }
-      guardian_student: {
+      emergency_contacts: {
         Row: {
           created_at: string
-          guardian_id: string
           id: string
-          student_id: string
+          is_whatapp: boolean
+          name: string | null
+          phone: string | null
+          relationship: Database['public']['Enums']['relationships'] | null
+          student_id: string | null
           updated_at: string
         }
         Insert: {
           created_at?: string
-          guardian_id: string
           id?: string
-          student_id: string
+          is_whatapp?: boolean
+          name?: string | null
+          phone?: string | null
+          relationship?: Database['public']['Enums']['relationships'] | null
+          student_id?: string | null
           updated_at?: string
         }
         Update: {
           created_at?: string
-          guardian_id?: string
           id?: string
-          student_id?: string
+          is_whatapp?: boolean
+          name?: string | null
+          phone?: string | null
+          relationship?: Database['public']['Enums']['relationships'] | null
+          student_id?: string | null
           updated_at?: string
         }
         Relationships: [
           {
-            foreignKeyName: 'guardianStudent_guardian_id_fkey'
-            columns: ['guardian_id']
-            isOneToOne: false
-            referencedRelation: 'guardians'
-            referencedColumns: ['id']
-          },
-          {
-            foreignKeyName: 'guardianStudent_student_id_fkey'
+            foreignKeyName: 'emergency_contact_student_id_fkey'
             columns: ['student_id']
             isOneToOne: false
             referencedRelation: 'students'
@@ -1253,6 +1258,45 @@ export type Database = {
           }
         ]
       }
+      guardians_students: {
+        Row: {
+          created_at: string
+          guardian_id: string
+          id: string
+          student_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          guardian_id: string
+          id?: string
+          student_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          guardian_id?: string
+          id?: string
+          student_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'guardianStudent_guardian_id_fkey'
+            columns: ['guardian_id']
+            isOneToOne: false
+            referencedRelation: 'guardians'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'guardianStudent_student_id_fkey'
+            columns: ['student_id']
+            isOneToOne: false
+            referencedRelation: 'students'
+            referencedColumns: ['id']
+          }
+        ]
+      }
       students: {
         Row: {
           class: Database['public']['Enums']['classes'] | null
@@ -1291,7 +1335,34 @@ export type Database = {
           }
         ]
       }
-      subject_rating: {
+      subjects: {
+        Row: {
+          created_at: string
+          id: string
+          is_arts: boolean
+          is_science: boolean
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_arts?: boolean
+          is_science?: boolean
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_arts?: boolean
+          is_science?: boolean
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      subjects_ratings: {
         Row: {
           created_at: string
           id: string
@@ -1332,33 +1403,6 @@ export type Database = {
             referencedColumns: ['id']
           }
         ]
-      }
-      subjects: {
-        Row: {
-          created_at: string
-          id: string
-          is_arts: boolean
-          is_science: boolean
-          name: string
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          is_arts?: boolean
-          is_science?: boolean
-          name: string
-          updated_at?: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          is_arts?: boolean
-          is_science?: boolean
-          name?: string
-          updated_at?: string
-        }
-        Relationships: []
       }
       users: {
         Row: {
@@ -1432,6 +1476,17 @@ export type Database = {
       genders: 'Male' | 'Female'
       provinces: 'Punjab' | 'Sindh' | 'Balochistan' | 'KPK'
       ratings: '1' | '2' | '3' | '4' | '5'
+      relationships:
+        | 'Father'
+        | 'Mother'
+        | 'Grand Father'
+        | 'Grand Mother'
+        | 'Uncle'
+        | 'Aunt'
+        | 'Brother'
+        | 'Sister'
+        | 'Cousin'
+        | 'Other'
       subject_groups:
         | 'Science'
         | 'Arts'
@@ -1604,6 +1659,18 @@ export const Constants = {
       genders: ['Male', 'Female'],
       provinces: ['Punjab', 'Sindh', 'Balochistan', 'KPK'],
       ratings: ['1', '2', '3', '4', '5'],
+      relationships: [
+        'Father',
+        'Mother',
+        'Grand Father',
+        'Grand Mother',
+        'Uncle',
+        'Aunt',
+        'Brother',
+        'Sister',
+        'Cousin',
+        'Other'
+      ],
       subject_groups: [
         'Science',
         'Arts',

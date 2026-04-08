@@ -1,18 +1,19 @@
 import { z } from 'zod'
 
 export const activitiesSchema = z.object({
-  career_goal: z.string().optional().meta({ label: 'Career Goal', placeholder: 'What do you want to be?', orientation: 'vertical' }),
-  hobby: z.string().optional().meta({ label: 'Hobbies / Passion', placeholder: 'e.g., Reading, Coding, Cricket', orientation: 'vertical' }),
-  role_model: z.string().optional().meta({ label: 'Who is your Role Model?', placeholder: 'e.g., Parents, Teacher', orientation: 'vertical' }),
-  inspiration: z.string().optional().meta({ label: 'What is your biggest Inspiration?', placeholder: 'Describe what motivates you', orientation: 'vertical' }),
+  career_goal: z.string().optional().meta({ label: 'What do you want to be?', placeholder: 'Doctor, Software Engineer, Civil Engineer etc.', orientation: 'vertical' }),
+  career_motivation: z.string().optional().meta({ label: 'Why this career specifically?', placeholder: 'Write your reason...', orientation: 'vertical' }),
+  hobby: z.string().optional().meta({ label: 'Do you have a hobby?', placeholder: 'Reading Novels, Watching Netflix, Working out in GYM etc.', orientation: 'vertical' }),
+  role_model: z.string().optional().meta({ label: 'Who is your Role Model?', placeholder: 'Father, Teacher, Bill Gates, John Doe etc.', orientation: 'vertical' }),
   is_hafiz: z.boolean().optional().meta({ label: 'Are you Hafiz-e-Quran?', type: 'switch', orientation: 'horizontal', placeholder: ' ' }),
-  want_job: z.boolean().optional().meta({ label: 'Do you like the idea of doing a job?', type: 'switch', orientation: 'horizontal', placeholder: ' ' })
+  want_job: z.boolean().optional().meta({ label: 'Do you prefer Job over Business?', type: 'switch', orientation: 'horizontal', placeholder: ' ' })
 })
 
 export const subjectRatingSchema = z.object({
   subject_ranking: z.array(z.object({
+    subject_id: z.string(),
     name: z.string(),
-    liking: z.number().min(1).max(5)
+    rating: z.number().min(1).max(5)
   })).meta({
     class: 'lg:col-span-3'
   })
