@@ -24,29 +24,43 @@ export const useUsersStore = defineStore('usersStore', () => {
     }
   })
 
+  const fetchPromise = ref<Promise<void> | null>(null)
   const getUser = async () => {
     const authStore = useAuthStore()
     if (userFetched.value || !authStore.userId) return
 
-    try {
-      const data = await $api.users.get(authStore.userId)
+    if (fetchPromise.value) return fetchPromise.value
 
-      if (data) {
-        user.value = data
-        displayAvatarUrl.value = user.value?.avatar_url
+    fetchPromise.value = (async () => {
+      try {
+        const userId = authStore.userId
+        if (!userId) return
+
+        const data = await $api.users.get(userId)
+
+        if (data) {
+          user.value = data
+          if (user.value?.avatar_url) {
+            displayAvatarUrl.value = `${user.value.avatar_url}?t=${Date.now()}`
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching profile:', error)
+      } finally {
+        userFetched.value = true
+        fetchPromise.value = null
       }
-    } catch (error) {
-      console.error('Error fetching profile:', error)
-    } finally {
-      userFetched.value = true
-    }
+    })()
+
+    return fetchPromise.value
   }
 
   const upsertUser = async (updates: Users['Update']) => {
     useLayoutStore().isLoading = true
     const authStore = useAuthStore()
 
-    if (!authStore.userId) return
+    const userId = authStore.userId
+    if (!userId) return
 
     try {
       if (avatarFile.value) {
@@ -56,7 +70,7 @@ export const useUsersStore = defineStore('usersStore', () => {
       const data = await $api.users.upsert(
         {
           ...updates,
-          id: authStore.userId
+          id: userId
         } as Users['Insert']
       )
 
@@ -65,7 +79,9 @@ export const useUsersStore = defineStore('usersStore', () => {
     } catch (error) {
       toast.add($formatError(error as ApiError))
     } finally {
-      displayAvatarUrl.value = user.value?.avatar_url
+      if (user.value?.avatar_url) {
+        displayAvatarUrl.value = `${user.value.avatar_url}?t=${Date.now()}`
+      }
       useLayoutStore().isLoading = false
     }
   }
@@ -88,8 +104,9 @@ export const useUsersStore = defineStore('usersStore', () => {
     avatarUploading.value = true
     try {
       const authStore = useAuthStore()
-      if (avatarFile.value) {
-        return await uploadFile(`${authStore.userId}/avatar.png`, avatarFile.value)
+      const userId = authStore.userId
+      if (avatarFile.value && userId) {
+        return await uploadFile(`${userId}/avatar.png`, avatarFile.value)
       }
     } catch (error) {
       toast.add($formatError(error as ApiError))

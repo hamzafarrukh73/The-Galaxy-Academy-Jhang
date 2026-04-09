@@ -29,9 +29,9 @@ onMounted(() => {
       <UContainer class="flex flex-col items-center justify-between gap-12 py-8">
         <UAvatar
           :src="usersStore.displayAvatarUrl || ''"
-          class="size-[full] aspect-square border-2 p-1"
+          class="size-[full] max-w-full aspect-square border-2 p-1"
           :ui="{
-            root: 'object-cover'
+            root: 'w-full object-cover'
           }"
         />
 
@@ -75,9 +75,12 @@ onMounted(() => {
             <div class="flex items-center gap-2">
               <AppLogo collapsed />
               <div class="flex flex-col items-start justify-center">
-                <h6 class="text-wrap! text-2x!">
+                <h6 class="text-wrap! text-2xl!">
                   The Galaxy Academy Jhang
                 </h6>
+                <!-- <h6 class="text-wrap! text-lg!">
+
+                </h6> -->
               </div>
             </div>
 

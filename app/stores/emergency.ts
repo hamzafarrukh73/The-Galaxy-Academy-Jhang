@@ -18,21 +18,35 @@ export const useEmergencyStore = defineStore('emergencyStore', () => {
     }
   })
 
+  const fetchPromise = ref<Promise<void> | null>(null)
   const getContact = async () => {
     const studentStore = useStudentsStore()
-    if (contactFetched.value || !studentStore.student?.id) return
+    if (contactFetched.value) return
+    if (fetchPromise.value) return fetchPromise.value
 
-    try {
-      const data = await $api.emergency.getByStudentId(studentStore.student.id)
+    fetchPromise.value = (async () => {
+      try {
+        if (!studentStore.student) {
+          await studentStore.getStudent()
+        }
 
-      if (data) {
-        contact.value = data
+        const studentId = studentStore.student?.id
+        if (!studentId) return
+
+        const data = await $api.emergency.getByStudentId(studentId)
+
+        if (data) {
+          contact.value = data
+        }
+      } catch (error) {
+        console.error('Error fetching emergency contact:', error)
+      } finally {
+        contactFetched.value = true
+        fetchPromise.value = null
       }
-    } catch (error) {
-      console.error('Error fetching emergency contact:', error)
-    } finally {
-      contactFetched.value = true
-    }
+    })()
+
+    return fetchPromise.value
   }
 
   const upsertContact = async (updates: EmergencyContacts['Update']) => {

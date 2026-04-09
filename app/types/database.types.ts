@@ -1339,7 +1339,6 @@ export type Database = {
         Row: {
           created_at: string
           id: string
-          is_arts: boolean
           is_science: boolean
           name: string
           updated_at: string
@@ -1347,7 +1346,6 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
-          is_arts?: boolean
           is_science?: boolean
           name: string
           updated_at?: string
@@ -1355,7 +1353,6 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
-          is_arts?: boolean
           is_science?: boolean
           name?: string
           updated_at?: string
@@ -1367,7 +1364,7 @@ export type Database = {
           created_at: string
           id: string
           rating: Database['public']['Enums']['ratings'] | null
-          student_id: string | null
+          student_id: string
           subject_id: string
           updated_at: string
         }
@@ -1375,7 +1372,7 @@ export type Database = {
           created_at?: string
           id?: string
           rating?: Database['public']['Enums']['ratings'] | null
-          student_id?: string | null
+          student_id: string
           subject_id: string
           updated_at?: string
         }
@@ -1383,7 +1380,7 @@ export type Database = {
           created_at?: string
           id?: string
           rating?: Database['public']['Enums']['ratings'] | null
-          student_id?: string | null
+          student_id?: string
           subject_id?: string
           updated_at?: string
         }

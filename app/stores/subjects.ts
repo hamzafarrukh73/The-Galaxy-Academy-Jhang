@@ -21,41 +21,56 @@ export const useSubjectsStore = defineStore('subjectsStore', () => {
     }
   })
 
+  const subjectsPromise = ref<Promise<void> | null>(null)
   const getSubjects = async () => {
     if (subjectsFetched.value) return
-    try {
-      const data = await $api.subjects.list()
-      if (data) {
-        subjects.value = data as Tables['subjects']['Row'][]
+    if (subjectsPromise.value) return subjectsPromise.value
+
+    subjectsPromise.value = (async () => {
+      try {
+        const data = await $api.subjects.list()
+        if (data) {
+          subjects.value = data as Tables['subjects']['Row'][]
+        }
+      } catch (error) {
+        toast.add($formatError(error as ApiError))
+      } finally {
+        subjectsFetched.value = true
+        subjectsPromise.value = null
       }
-    } catch (error) {
-      toast.add($formatError(error as ApiError))
-    } finally {
-      subjectsFetched.value = true
-    }
+    })()
+
+    return subjectsPromise.value
   }
 
+  const ratingsPromise = ref<Promise<void> | null>(null)
   const getRatings = async () => {
     const studentsStore = useStudentsStore()
     if (ratingsFetched.value) return
+    if (ratingsPromise.value) return ratingsPromise.value
 
-    try {
-      if (!studentsStore.student) await studentsStore.getStudent()
-      const studentId = studentsStore.student?.id
-      if (!studentId) return
+    ratingsPromise.value = (async () => {
+      try {
+        if (!studentsStore.student) await studentsStore.getStudent()
+        const studentId = studentsStore.student?.id
+        if (!studentId) return
 
-      const data = await $api.subject_ratings.list({
-        filters: { student_id: studentId }
-      })
+        const data = await $api.subject_ratings.list({
+          filters: { student_id: studentId }
+        })
 
-      if (data) {
-        ratings.value = data as Tables['subjects_ratings']['Row'][]
+        if (data) {
+          ratings.value = data as Tables['subjects_ratings']['Row'][]
+        }
+      } catch (error) {
+        toast.add($formatError(error as ApiError))
+      } finally {
+        ratingsFetched.value = true
+        ratingsPromise.value = null
       }
-    } catch (error) {
-      toast.add($formatError(error as ApiError))
-    } finally {
-      ratingsFetched.value = true
-    }
+    })()
+
+    return ratingsPromise.value
   }
 
   const upsertRatings = async (updates: { subject_id: string, rating: number }[]) => {

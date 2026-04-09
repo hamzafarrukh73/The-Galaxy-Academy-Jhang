@@ -19,31 +19,42 @@ export const useStudentsStore = defineStore('studentsStore', () => {
     }
   })
 
+  const fetchPromise = ref<Promise<void> | null>(null)
   const getStudent = async () => {
     const authStore = useAuthStore()
     if (studentFetched.value || !authStore.userId) return
 
-    try {
-      const data = await $api.students.getByUserId(authStore.userId)
+    if (fetchPromise.value) return fetchPromise.value
 
-      if (data) {
-        student.value = data
+    fetchPromise.value = (async () => {
+      try {
+        const userId = authStore.userId
+        if (!userId) return
+
+        const data = await $api.students.getByUserId(userId)
+        if (data) {
+          student.value = data
+        }
+      } catch (error) {
+        console.error('Error fetching student info:', error)
+      } finally {
+        studentFetched.value = true
+        fetchPromise.value = null
       }
-    } catch (error) {
-      console.error('Error fetching student info:', error)
-    } finally {
-      studentFetched.value = true
-    }
+    })()
+
+    return fetchPromise.value
   }
 
   const upsertStudent = async (updates: Students['Update']) => {
     useLayoutStore().isLoading = true
     const authStore = useAuthStore()
 
-    if (!authStore.userId) return
+    const userId = authStore.userId
+    if (!userId) return
 
     try {
-      const reqPayload = { ...updates, user_id: authStore.userId }
+      const reqPayload = { ...updates, user_id: userId }
       if (student.value?.id) reqPayload.id = student.value.id
 
       const data = await $api.students.upsert(reqPayload as Students['Insert'])

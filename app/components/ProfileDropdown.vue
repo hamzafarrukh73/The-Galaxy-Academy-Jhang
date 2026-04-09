@@ -48,7 +48,7 @@ const profileMenu = computed<DropdownMenuItem[]>(() => {
   >
     <UButton
       :avatar="{
-        src: usersStore.user?.avatar_url || '',
+        src: usersStore.displayAvatarUrl || '',
         icon: ICONS.nav.user,
         loading: 'lazy',
         ui: {
@@ -65,7 +65,7 @@ const profileMenu = computed<DropdownMenuItem[]>(() => {
         :name="fullName"
         :description="authStore.user?.email"
         :avatar="{
-          src: usersStore.user?.avatar_url || '',
+          src: usersStore.displayAvatarUrl || '',
           icon: ICONS.nav.user,
           loading: 'lazy'
         }"
