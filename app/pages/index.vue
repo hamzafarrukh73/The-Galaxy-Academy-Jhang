@@ -23,7 +23,7 @@ const landingStore = useLandingStore()
       class="flex items-center justify-center min-h-[90vh]"
     />
 
-    <UPageSection
+    <!-- <UPageSection
       id="pricing"
       title="Pricing Plans"
       class="flex flex-col items-center justify-center gap-12 min-h-[90vh]"
@@ -47,13 +47,8 @@ const landingStore = useLandingStore()
             class="w-full"
           />
         </template>
-        <!-- <UPricingPlans
-          orientation="horizontal"
-          :plans="landingStore.plans"
-          class="w-full"
-        /> -->
       </UTabs>
-    </UPageSection>
+    </UPageSection> -->
 
     <!-- <section
       id="get-started"
