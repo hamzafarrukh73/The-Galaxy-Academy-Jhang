@@ -19,7 +19,8 @@ export const useStudentPrint = () => {
         activitiesStore.getActivities(),
         emergencyStore.getContact(),
         subjectsStore.getSubjects(),
-        subjectsStore.getRatings()
+        subjectsStore.getRatings(),
+        studentsStore.getAcademicBackground()
       ])
     } finally {
       isLoading.value = false
@@ -31,7 +32,7 @@ export const useStudentPrint = () => {
     return `${p?.first_name || ''} ${p?.last_name || ''}`.trim() || 'Student Name'
   })
 
-  const studentId = computed(() => studentsStore.student?.id || 'PENDING')
+  const studentId = computed(() => studentsStore.student?.display_id || 'PENDING')
 
   const formatDate = (date: string | null | undefined) =>
     date ? new Date(date).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' }) : 'N/A'
@@ -49,9 +50,7 @@ export const useStudentPrint = () => {
       aspiration: String(i?.career_goal || 'N/A'),
       motivation: String(i?.career_motivation || 'N/A'),
       hobby: String(i?.hobby || 'N/A'),
-      role_model: String(i?.role_model || 'N/A'),
-      is_hafiz: i?.is_hafiz ? 'Yes' : 'No',
-      want_job: i?.want_job ? 'Yes' : 'No'
+      is_hafiz: i?.is_hafiz ? 'Yes' : 'No'
     }
   })
 
@@ -81,6 +80,16 @@ export const useStudentPrint = () => {
     }).sort((a: { rating: number }, b: { rating: number }) => b.rating - a.rating)
   })
 
+  const academicBackground = computed(() => {
+    const a = studentsStore.academicBackground
+    return {
+      school: a?.school || 'N/A',
+      lastClass: a?.last_class || 'N/A',
+      marksPercent: a?.marks_percent ? `${a.marks_percent}%` : 'N/A',
+      passingYear: a?.passing_year || 'N/A'
+    }
+  })
+
   return {
     isLoading,
     prepareData,
@@ -90,6 +99,7 @@ export const useStudentPrint = () => {
     classGroup,
     activityData,
     subjectScores,
+    academicBackground,
     authStore,
     usersStore,
     studentsStore,

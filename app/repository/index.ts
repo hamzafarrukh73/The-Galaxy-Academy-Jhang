@@ -19,6 +19,7 @@ export const createRepository = (client: NuxtSupabaseClient) => {
     guardians: new GuardiansRepository(client, 'guardians'),
     emergency: new EmergencyContactsRepository(client, 'emergency_contacts'),
     activities: new ActivitiesRepository(client, 'activities'),
+    academic: new GenericAPI<'academic_backgrounds'>(client, 'academic_backgrounds'),
     subjects: new GenericAPI<'subjects'>(client, 'subjects'),
     subject_ratings: new GenericAPI<'subjects_ratings'>(client, 'subjects_ratings')
   }

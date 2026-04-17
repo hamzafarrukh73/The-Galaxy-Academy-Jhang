@@ -89,7 +89,7 @@ const computedFields = computed(() => {
             <!-- Select Menu -->
             <template v-if="field.type === 'select'">
               <USelectMenu
-                v-model="(state[field.key as keyof T] as any)"
+                v-model="(state[field.key as keyof T] as string | number | Record<string, unknown> | undefined)"
                 :items="field.items"
                 placeholder="Select"
                 v-bind="field.props"

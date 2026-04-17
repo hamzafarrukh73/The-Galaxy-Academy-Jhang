@@ -9,7 +9,7 @@ export const useActivitiesStore = defineStore('activitiesStore', () => {
   const activities = ref<Activities['Row'] | null>(null)
 
   const completion = computed(() => {
-    const fields = ['career_goal', 'career_motivation', 'hobby', 'role_model'] as const
+    const fields = ['career_goal', 'career_motivation', 'hobby'] as const
     const filled = fields.filter(f => !!activities.value?.[f]).length
     return {
       filled,

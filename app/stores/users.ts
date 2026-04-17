@@ -12,10 +12,15 @@ export const useUsersStore = defineStore('usersStore', () => {
   const userFetched = ref(false)
   const user = ref<Users['Row'] | null>(null)
 
-  const displayAvatarUrl = ref(user.value?.avatar_url)
+  const cacheBuster = ref(Date.now())
+  const displayAvatarUrl = computed(() => {
+    if (avatarFile.value) return URL.createObjectURL(avatarFile.value)
+    if (!user.value?.avatar_url) return ''
+    return `${user.value.avatar_url}?t=${cacheBuster.value}`
+  })
 
   const completion = computed(() => {
-    const fields = ['first_name', 'last_name', 'cnic', 'dob', 'address', 'city', 'province', 'avatar_url'] as const
+    const fields = ['first_name', 'last_name', 'phone', 'cnic', 'dob', 'address', 'city', 'province', 'avatar_url'] as const
     const filled = fields.filter(f => !!user.value?.[f]).length
     return {
       filled,
@@ -25,6 +30,7 @@ export const useUsersStore = defineStore('usersStore', () => {
   })
 
   const fetchPromise = ref<Promise<void> | null>(null)
+
   const getUser = async () => {
     const authStore = useAuthStore()
     if (userFetched.value || !authStore.userId) return
@@ -40,9 +46,7 @@ export const useUsersStore = defineStore('usersStore', () => {
 
         if (data) {
           user.value = data
-          if (user.value?.avatar_url) {
-            displayAvatarUrl.value = `${user.value.avatar_url}?t=${Date.now()}`
-          }
+          cacheBuster.value = Date.now()
         }
       } catch (error) {
         console.error('Error fetching profile:', error)
@@ -79,24 +83,16 @@ export const useUsersStore = defineStore('usersStore', () => {
     } catch (error) {
       toast.add($formatError(error as ApiError))
     } finally {
-      if (user.value?.avatar_url) {
-        displayAvatarUrl.value = `${user.value.avatar_url}?t=${Date.now()}`
-      }
+      cacheBuster.value = Date.now()
       useLayoutStore().isLoading = false
     }
   }
 
   const handleAvatarSelect = async (event: Event) => {
     const target = event.target as HTMLInputElement
-    const files = target?.files
-    const file = files ? files[0] : null
+    const file = target?.files?.[0]
     if (file) {
-      try {
-        avatarFile.value = file
-        displayAvatarUrl.value = URL.createObjectURL(file)
-      } catch (error) {
-        toast.add($formatError(error as ApiError))
-      }
+      avatarFile.value = file
     }
   }
 
@@ -119,7 +115,7 @@ export const useUsersStore = defineStore('usersStore', () => {
   const uploadFile = async (path: string, file: File, isPublic: boolean = true) => {
     try {
       const supabase = useSupabaseClient()
-      const { data } = await supabase.storage.from('galaxyacademy').upload(path, file, { upsert: true })
+      const { data } = await supabase.storage.from('galaxy').upload(path, file, { upsert: true })
       if (data) {
         if (isPublic) {
           const url = await getPublicUrl(path)
@@ -137,7 +133,7 @@ export const useUsersStore = defineStore('usersStore', () => {
   const getSignedUrl = async (path: string) => {
     try {
       const supabase = useSupabaseClient()
-      const { data } = await supabase.storage.from('galaxyacademy').createSignedUrl(path, 60 * 60 * 24)
+      const { data } = await supabase.storage.from('galaxy').createSignedUrl(path, 60 * 60 * 24)
       if (data) {
         return data.signedUrl
       }
@@ -149,7 +145,7 @@ export const useUsersStore = defineStore('usersStore', () => {
   const getPublicUrl = async (path: string) => {
     try {
       const supabase = useSupabaseClient()
-      const { data } = supabase.storage.from('galaxyacademy').getPublicUrl(path)
+      const { data } = supabase.storage.from('galaxy').getPublicUrl(path)
       if (data) {
         return data.publicUrl
       }
@@ -162,11 +158,11 @@ export const useUsersStore = defineStore('usersStore', () => {
   const clearData = () => {
     user.value = null
     userFetched.value = false
-    displayAvatarUrl.value = ''
   }
 
   return {
     user,
+    avatarFile,
     avatarUploading,
     displayAvatarUrl,
     completion,

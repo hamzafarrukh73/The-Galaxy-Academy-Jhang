@@ -5,47 +5,55 @@ type PublicEnums = Database['public']['Enums']
 export const OPTIONS = {
   cities: [
     'Jhang',
+    'Faisalabad',
     'Lahore',
-    'Islamabad',
-    'Multan',
-    'Karachi',
-    'Chiniot',
-    'Toba',
-    'Sargodha',
-    'Sahiwal',
-    'Other'
-  ] as PublicEnums['cities'][],
+    'Islamabad'
+  ] as PublicEnums['city_enum'][],
 
   provinces: [
     'Punjab',
     'Sindh',
     'Balochistan',
     'KPK'
-  ] as PublicEnums['provinces'][],
+  ] as PublicEnums['province_enum'][],
 
   genders: [
     'Male',
     'Female'
-  ] as PublicEnums['genders'][],
+  ] as PublicEnums['gender_enum'][],
 
   classes: [
+    '5th',
+    '8th',
     '9th',
     '10th',
     '11th',
-    '12th'
-  ] as PublicEnums['classes'][],
+    '12th',
+    'Other'
+  ] as PublicEnums['class_enum'][],
 
   subject_groups: [
-    'Science',
-    'Arts',
-    'Pre-Medical',
-    'Pre-Engineering',
-    'Computer Science (ICS)',
-    'Commerce (I.Com)',
-    'Diploma (Any Field)'
-  ] as PublicEnums['subject_groups'][],
+    'Science (Biology)',
+    'Science (Computer)',
+    'FSc. (Pre-Medical)',
+    'FSc. (Pre-Engineering)',
+    'ICS (Computer Science)',
+    'I.Com (Commerce)',
+    'F.A. (Arts)',
+    'Diploma'
+  ] as PublicEnums['subject_group_enum'][],
 
-  relationships: ['Father', 'Mother', 'Uncle', 'Aunt', 'Brother', 'Sister'] as const,
+  relationships: [
+    'Father',
+    'Mother',
+    'GrandFather',
+    'GrandMother',
+    'Uncle',
+    'Aunt',
+    'Brother',
+    'Sister',
+    'Other'
+  ] as PublicEnums['relationship_enum'][],
   blood_groups: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'] as const,
   career_goals: ['Doctor / MBBS', 'Engineer / Engineering', 'Chartered Accountant (CA)', 'Software Developer / IT', 'Civil Services (CSS)', 'Other'] as const,
   hobbies: ['Reading', 'Coding', 'Cricket', 'Football', 'Debating / Speaking', 'Arts / Painting', 'Qira\'at / Naat', 'Other'] as const

@@ -29,11 +29,11 @@ const fields: AuthFormField[] = [{
   required: true
 }]
 
-const providers = [{
-  label: 'Google',
-  icon: 'i-simple-icons-google',
-  onClick: () => authStore.socialGoogleLogin()
-}]
+// const providers = [{
+//   label: 'Google',
+//   icon: 'i-simple-icons-google',
+//   onClick: () => authStore.socialGoogleLogin()
+// }]
 
 const schema = z.object({
   email: z.email('Invalid email'),
@@ -64,7 +64,6 @@ function onSubmit(payload: FormSubmitEvent<Schema>) {
         title="Signup"
         :schema="schema"
         :fields="fields"
-        :providers="providers"
         :icon="ICONS.nav.user"
         :loading="layoutStore.isLoading"
         :submit="{

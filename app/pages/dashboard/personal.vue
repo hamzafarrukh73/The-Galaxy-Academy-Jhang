@@ -25,6 +25,7 @@ const userState = ref<Users['Update']>({
   address: '',
   city: undefined,
   province: undefined,
+  phone: '',
   avatar_url: ''
 })
 

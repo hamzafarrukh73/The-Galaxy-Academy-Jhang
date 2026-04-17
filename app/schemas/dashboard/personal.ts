@@ -6,6 +6,7 @@ export const identitySchema = z.object({
   last_name: z.string().optional().meta({ label: 'Last Name', placeholder: 'Enter your last name' }),
   cnic: z.string().optional().meta({ label: 'CNIC / B-Form', placeholder: '33202-1234567-1' }),
   dob: z.string().optional().meta({ label: 'Date of Birth', type: 'date' }),
+  phone: z.string().optional().meta({ label: 'Phone Number', placeholder: 'xxxx-xxxxxxx' }),
   gender: z.string().optional().meta({ label: 'Gender', type: 'select', items: [...OPTIONS.genders] })
 })
 

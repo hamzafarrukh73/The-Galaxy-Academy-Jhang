@@ -67,15 +67,15 @@ const downloadPdf = () => {
           color="primary"
           variant="solid"
           class="rounded-xl hover:cursor-pointer"
-          :disabled="profileCompletion < 100"
+          :disabled="profileCompletion < 80"
           @click="downloadPdf"
         />
       </div>
       <p
-        v-if="profileCompletion < 100"
+        v-if="profileCompletion < 80"
         class="text-muted"
       >
-        Complete profile to unlock download.
+        Complete at least 80% of your profile to unlock download.
       </p>
       <p
         v-else

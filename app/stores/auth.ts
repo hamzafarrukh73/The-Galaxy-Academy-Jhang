@@ -140,6 +140,18 @@ export const useAuthStore = defineStore('authStore', () => {
     }
   }
 
+  const updateAccount = async (attributes: Parameters<typeof $api.auth.updateUser>[0]) => {
+    useLayoutStore().isLoading = true
+    try {
+      await $api.auth.updateUser(attributes)
+      toast.add({ title: 'Account', description: 'Account updated successfully', color: 'success' })
+    } catch (error) {
+      toast.add($formatError(error as ApiError))
+    } finally {
+      useLayoutStore().isLoading = false
+    }
+  }
+
   return {
     user,
     userId,
@@ -152,6 +164,7 @@ export const useAuthStore = defineStore('authStore', () => {
     confirmPasswordReset,
     socialGoogleLogin,
     resendVerificationEmail,
-    verifyEmail
+    verifyEmail,
+    updateAccount
   }
 })

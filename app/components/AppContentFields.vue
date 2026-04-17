@@ -66,7 +66,6 @@ const formatValue = (val: unknown): string => {
     >
       <slot>
         <UPageFeature
-
           v-for="item in props.items"
           :key="item.title"
           v-bind="item"

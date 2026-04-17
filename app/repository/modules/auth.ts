@@ -63,6 +63,13 @@ export default class AuthRepository extends BaseRepository {
     })
   }
 
+  async updateUser(attributes: Parameters<typeof this.client.auth.updateUser>[0]) {
+    const data = await this.request<UserResponse['data']>(
+      this.client.auth.updateUser(attributes)
+    )
+    return data.user
+  }
+
   async resend(payload: Parameters<typeof this.client.auth.resend>[0]) {
     return await this.request<unknown>(
       this.client.auth.resend(payload)

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Students } from '~/repository/modules/students'
+import type { Tables } from '~/repository'
 import type { Activities } from '~/repository/modules/activities'
 
 import {
@@ -7,9 +7,9 @@ import {
 } from '~/schemas/dashboard/students'
 
 import {
-  activitiesSchema,
-  subjectRatingSchema
+  activitiesSchema
 } from '~/schemas/dashboard/activities'
+import { academicSchema } from '~/schemas/dashboard/academic'
 
 definePageMeta({
   layout: 'dashboard',
@@ -20,7 +20,7 @@ const studentsStore = useStudentsStore()
 const activitiesStore = useActivitiesStore()
 const subjectsStore = useSubjectsStore()
 
-const studentState = ref<Students['Update']>({
+const studentState = ref<Tables['students']['Update']>({
   school: '',
   class: undefined,
   subject_group: undefined
@@ -29,12 +29,16 @@ const activitiesState = ref<Activities['Update']>({
   career_goal: '',
   career_motivation: '',
   hobby: '',
-  role_model: '',
-  is_hafiz: false,
-  want_job: false
+  is_hafiz: false
 })
 const ratingsState = ref<{ subject_ranking: { subject_id: string, name: string, rating: number }[] }>({
   subject_ranking: []
+})
+const academicState = ref<Tables['academic_backgrounds']['Update']>({
+  last_class: undefined,
+  school: '',
+  marks_percent: undefined,
+  passing_year: ''
 })
 
 const loadData = async () => {
@@ -42,11 +46,13 @@ const loadData = async () => {
     studentsStore.getStudent(),
     activitiesStore.getActivities(),
     subjectsStore.getSubjects(),
-    subjectsStore.getRatings()
+    subjectsStore.getRatings(),
+    studentsStore.getAcademicBackground()
   ])
 
   studentState.value = { ...studentState.value, ...studentsStore.student }
   activitiesState.value = { ...activitiesState.value, ...activitiesStore.activities }
+  academicState.value = { ...academicState.value, ...studentsStore.academicBackground }
 
   const dbSubjects = subjectsStore.subjects
   const dbRatings = subjectsStore.ratings
@@ -73,8 +79,8 @@ const onSaveActivities = async () => {
   await activitiesStore.upsertActivities(activitiesState.value)
 }
 
-const onSaveRatings = async () => {
-  await subjectsStore.upsertRatings(ratingsState.value.subject_ranking)
+const onSaveAcademic = async () => {
+  await studentsStore.upsertAcademicBackground(academicState.value)
 }
 </script>
 
@@ -118,46 +124,20 @@ const onSaveRatings = async () => {
           />
         </UPageCard>
 
-        <!-- Card 3: Subject Ratings -->
+        <!-- Card 3: Academic Background -->
         <UPageCard
-          title="Subject Preference"
-          description="Rate your interest in each subject from 1 (Least Liked) to 5 (Most Liked). This helps us tailor your learning experience."
-          :icon="ICONS.nav.interests"
+          title="Academic Background"
+          description="Provide details of your last completed academic level."
+          :icon="ICONS.nav.education"
           class="lg:col-span-3"
         >
           <AppForm
-            :state="ratingsState"
-            :schema="subjectRatingSchema"
-            submit-label="Save Ratings"
-            @submit="onSaveRatings"
-          >
-            <template #field-subject_ranking>
-              <div class="space-y-8 w-full px-1">
-                <div
-                  v-for="subject in ratingsState.subject_ranking"
-                  :key="subject.name"
-                  class="flex flex-col gap-2"
-                >
-                  <div class="flex justify-between items-center px-1">
-                    <span class="text-zinc-500 font-medium">{{ subject.name }}</span>
-                    <span
-                      class="text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-primary-500/10 text-primary-500"
-                    >
-                      {{ ['Not at all', 'Dislike', 'Neutral', 'Like', 'Love'][subject.rating - 1] }}
-                    </span>
-                  </div>
-                  <USlider
-                    v-model="subject.rating"
-                    :min="1"
-                    :max="5"
-                    :step="1"
-                    size="lg"
-                    class="w-full"
-                  />
-                </div>
-              </div>
-            </template>
-          </AppForm>
+            :state="academicState"
+            :schema="academicSchema"
+            grid-class="grid grid-cols-1 md:grid-cols-2 gap-4"
+            submit-label="Save Academic Background"
+            @submit="onSaveAcademic"
+          />
         </UPageCard>
       </UPageGrid>
     </UPageBody>

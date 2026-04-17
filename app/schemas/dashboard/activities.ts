@@ -4,9 +4,7 @@ export const activitiesSchema = z.object({
   career_goal: z.string().optional().meta({ label: 'What do you want to be?', placeholder: 'Doctor, Software Engineer, Civil Engineer etc.', orientation: 'vertical' }),
   career_motivation: z.string().optional().meta({ label: 'Why this career specifically?', placeholder: 'Write your reason...', orientation: 'vertical' }),
   hobby: z.string().optional().meta({ label: 'Do you have a hobby?', placeholder: 'Reading Novels, Watching Netflix, Working out in GYM etc.', orientation: 'vertical' }),
-  role_model: z.string().optional().meta({ label: 'Who is your Role Model?', placeholder: 'Father, Teacher, Bill Gates, John Doe etc.', orientation: 'vertical' }),
-  is_hafiz: z.boolean().optional().meta({ label: 'Are you Hafiz-e-Quran?', type: 'switch', orientation: 'horizontal', placeholder: ' ' }),
-  want_job: z.boolean().optional().meta({ label: 'Do you prefer Job over Business?', type: 'switch', orientation: 'horizontal', placeholder: ' ' })
+  is_hafiz: z.boolean().optional().meta({ label: 'Are you Hafiz-e-Quran?', type: 'switch', orientation: 'horizontal', placeholder: ' ' })
 })
 
 export const subjectRatingSchema = z.object({

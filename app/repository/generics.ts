@@ -25,6 +25,15 @@ export class GenericAPI<T extends keyof Tables> extends BaseRepository {
   }
 
   /**
+   * Fetch a single record by column
+   */
+  async getOne(column: string, value: string | number | boolean): Promise<Tables[T]['Row'] | null> {
+    return await this.request<Tables[T]['Row']>(
+      this.query.select('*').eq(column as never, value as never).maybeSingle()
+    )
+  }
+
+  /**
    * Fetch a list of records with optional filtering
    */
   async list(options: {

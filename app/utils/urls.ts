@@ -25,6 +25,7 @@ export const URLS = {
     personal: '/dashboard/personal',
     students: '/dashboard/students',
     activities: '/dashboard/students',
-    print: '/dashboard/print'
+    print: '/dashboard/print',
+    account: '/dashboard/account'
   }
 }

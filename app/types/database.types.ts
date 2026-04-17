@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: '14.4'
+    PostgrestVersion: '14.5'
   }
   auth: {
     Tables: {
@@ -1123,6 +1123,47 @@ export type Database = {
   }
   public: {
     Tables: {
+      academic_backgrounds: {
+        Row: {
+          created_at: string
+          id: string
+          last_class: Database['public']['Enums']['class_enum'] | null
+          marks_percent: number | null
+          passing_year: string | null
+          school: string | null
+          student_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          last_class?: Database['public']['Enums']['class_enum'] | null
+          marks_percent?: number | null
+          passing_year?: string | null
+          school?: string | null
+          student_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          last_class?: Database['public']['Enums']['class_enum'] | null
+          marks_percent?: number | null
+          passing_year?: string | null
+          school?: string | null
+          student_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'academic_backgrounds_student_id_fkey'
+            columns: ['student_id']
+            isOneToOne: false
+            referencedRelation: 'students'
+            referencedColumns: ['id']
+          }
+        ]
+      }
       activities: {
         Row: {
           career_goal: string | null
@@ -1131,10 +1172,8 @@ export type Database = {
           hobby: string | null
           id: string
           is_hafiz: boolean
-          role_model: string | null
           student_id: string | null
           updated_at: string
-          want_job: boolean
         }
         Insert: {
           career_goal?: string | null
@@ -1143,10 +1182,8 @@ export type Database = {
           hobby?: string | null
           id?: string
           is_hafiz?: boolean
-          role_model?: string | null
           student_id?: string | null
           updated_at?: string
-          want_job?: boolean
         }
         Update: {
           career_goal?: string | null
@@ -1155,10 +1192,8 @@ export type Database = {
           hobby?: string | null
           id?: string
           is_hafiz?: boolean
-          role_model?: string | null
           student_id?: string | null
           updated_at?: string
-          want_job?: boolean
         }
         Relationships: [
           {
@@ -1177,7 +1212,7 @@ export type Database = {
           is_whatapp: boolean
           name: string | null
           phone: string | null
-          relationship: Database['public']['Enums']['relationships'] | null
+          relationship: Database['public']['Enums']['relationship_enum'] | null
           student_id: string | null
           updated_at: string
         }
@@ -1187,7 +1222,7 @@ export type Database = {
           is_whatapp?: boolean
           name?: string | null
           phone?: string | null
-          relationship?: Database['public']['Enums']['relationships'] | null
+          relationship?: Database['public']['Enums']['relationship_enum'] | null
           student_id?: string | null
           updated_at?: string
         }
@@ -1197,7 +1232,7 @@ export type Database = {
           is_whatapp?: boolean
           name?: string | null
           phone?: string | null
-          relationship?: Database['public']['Enums']['relationships'] | null
+          relationship?: Database['public']['Enums']['relationship_enum'] | null
           student_id?: string | null
           updated_at?: string
         }
@@ -1233,7 +1268,7 @@ export type Database = {
           name?: string | null
           phone?: string | null
           relationship?: string | null
-          updated_at: string
+          updated_at?: string
           user_id?: string | null
         }
         Update: {
@@ -1282,14 +1317,14 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'guardianStudent_guardian_id_fkey'
+            foreignKeyName: 'guardianstudent_guardian_id_fkey'
             columns: ['guardian_id']
             isOneToOne: false
             referencedRelation: 'guardians'
             referencedColumns: ['id']
           },
           {
-            foreignKeyName: 'guardianStudent_student_id_fkey'
+            foreignKeyName: 'guardianstudent_student_id_fkey'
             columns: ['student_id']
             isOneToOne: false
             referencedRelation: 'students'
@@ -1299,29 +1334,38 @@ export type Database = {
       }
       students: {
         Row: {
-          class: Database['public']['Enums']['classes'] | null
+          class: Database['public']['Enums']['class_enum'] | null
           created_at: string
+          display_id: string | null
           id: string
           school: string
-          subject_group: Database['public']['Enums']['subject_groups'] | null
+          subject_group:
+            | Database['public']['Enums']['subject_group_enum']
+            | null
           updated_at: string
           user_id: string
         }
         Insert: {
-          class?: Database['public']['Enums']['classes'] | null
+          class?: Database['public']['Enums']['class_enum'] | null
           created_at?: string
+          display_id?: string | null
           id?: string
           school?: string
-          subject_group?: Database['public']['Enums']['subject_groups'] | null
+          subject_group?:
+            | Database['public']['Enums']['subject_group_enum']
+            | null
           updated_at?: string
           user_id: string
         }
         Update: {
-          class?: Database['public']['Enums']['classes'] | null
+          class?: Database['public']['Enums']['class_enum'] | null
           created_at?: string
+          display_id?: string | null
           id?: string
           school?: string
-          subject_group?: Database['public']['Enums']['subject_groups'] | null
+          subject_group?:
+            | Database['public']['Enums']['subject_group_enum']
+            | null
           updated_at?: string
           user_id?: string
         }
@@ -1363,7 +1407,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
-          rating: Database['public']['Enums']['ratings'] | null
+          rating: Database['public']['Enums']['ratings_enum']
           student_id: string
           subject_id: string
           updated_at: string
@@ -1371,7 +1415,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
-          rating?: Database['public']['Enums']['ratings'] | null
+          rating?: Database['public']['Enums']['ratings_enum']
           student_id: string
           subject_id: string
           updated_at?: string
@@ -1379,7 +1423,7 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
-          rating?: Database['public']['Enums']['ratings'] | null
+          rating?: Database['public']['Enums']['ratings_enum']
           student_id?: string
           subject_id?: string
           updated_at?: string
@@ -1393,7 +1437,7 @@ export type Database = {
             referencedColumns: ['id']
           },
           {
-            foreignKeyName: 'subjectRatings_student_id_fkey'
+            foreignKeyName: 'subjectratings_student_id_fkey'
             columns: ['student_id']
             isOneToOne: false
             referencedRelation: 'students'
@@ -1405,46 +1449,49 @@ export type Database = {
         Row: {
           address: string | null
           avatar_url: string | null
-          city: Database['public']['Enums']['cities']
+          city: Database['public']['Enums']['city_enum']
           cnic: string | null
           created_at: string
           dob: string | null
           first_name: string | null
-          gender: Database['public']['Enums']['genders'] | null
+          gender: Database['public']['Enums']['gender_enum'] | null
           id: string
           is_active: boolean
           last_name: string | null
-          province: Database['public']['Enums']['provinces']
+          phone: string | null
+          province: Database['public']['Enums']['province_enum']
           updated_at: string
         }
         Insert: {
           address?: string | null
           avatar_url?: string | null
-          city?: Database['public']['Enums']['cities']
+          city?: Database['public']['Enums']['city_enum']
           cnic?: string | null
           created_at?: string
           dob?: string | null
           first_name?: string | null
-          gender?: Database['public']['Enums']['genders'] | null
+          gender?: Database['public']['Enums']['gender_enum'] | null
           id?: string
           is_active?: boolean
           last_name?: string | null
-          province?: Database['public']['Enums']['provinces']
+          phone?: string | null
+          province?: Database['public']['Enums']['province_enum']
           updated_at?: string
         }
         Update: {
           address?: string | null
           avatar_url?: string | null
-          city?: Database['public']['Enums']['cities']
+          city?: Database['public']['Enums']['city_enum']
           cnic?: string | null
           created_at?: string
           dob?: string | null
           first_name?: string | null
-          gender?: Database['public']['Enums']['genders'] | null
+          gender?: Database['public']['Enums']['gender_enum'] | null
           id?: string
           is_active?: boolean
           last_name?: string | null
-          province?: Database['public']['Enums']['provinces']
+          phone?: string | null
+          province?: Database['public']['Enums']['province_enum']
           updated_at?: string
         }
         Relationships: []
@@ -1457,41 +1504,30 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      cities:
-        | 'Jhang'
-        | 'Lahore'
-        | 'Islamabad'
-        | 'Multan'
-        | 'Karachi'
-        | 'Chiniot'
-        | 'Toba'
-        | 'Sargodha'
-        | 'Sahiwal'
-        | 'Other'
-      class_groups: 'Matriculation' | 'Intermediate'
-      classes: '9th' | '10th' | '11th' | '12th'
-      genders: 'Male' | 'Female'
-      provinces: 'Punjab' | 'Sindh' | 'Balochistan' | 'KPK'
-      ratings: '1' | '2' | '3' | '4' | '5'
-      relationships:
+      city_enum: 'Jhang' | 'Faisalabad' | 'Lahore' | 'Islamabad'
+      class_enum: '5th' | '8th' | '9th' | '10th' | '11th' | '12th' | 'Other'
+      gender_enum: 'Male' | 'Female'
+      province_enum: 'Punjab' | 'Sindh' | 'Balochistan' | 'KPK'
+      ratings_enum: '1' | '2' | '3' | '4' | '5'
+      relationship_enum:
         | 'Father'
         | 'Mother'
-        | 'Grand Father'
-        | 'Grand Mother'
+        | 'GrandFather'
+        | 'GrandMother'
         | 'Uncle'
         | 'Aunt'
         | 'Brother'
         | 'Sister'
-        | 'Cousin'
         | 'Other'
-      subject_groups:
-        | 'Science'
-        | 'Arts'
-        | 'Pre-Medical'
-        | 'Pre-Engineering'
-        | 'Computer Science (ICS)'
-        | 'Commerce (I.Com)'
-        | 'Diploma (Any Field)'
+      subject_group_enum:
+        | 'Science (Biology)'
+        | 'Science (Computer)'
+        | 'FSc. (Pre-Medical)'
+        | 'FSc. (Pre-Engineering)'
+        | 'ICS (Computer Science)'
+        | 'I.Com (Commerce)'
+        | 'F.A. (Arts)'
+        | 'Diploma'
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1639,43 +1675,31 @@ export const Constants = {
   },
   public: {
     Enums: {
-      cities: [
-        'Jhang',
-        'Lahore',
-        'Islamabad',
-        'Multan',
-        'Karachi',
-        'Chiniot',
-        'Toba',
-        'Sargodha',
-        'Sahiwal',
-        'Other'
-      ],
-      class_groups: ['Matriculation', 'Intermediate'],
-      classes: ['9th', '10th', '11th', '12th'],
-      genders: ['Male', 'Female'],
-      provinces: ['Punjab', 'Sindh', 'Balochistan', 'KPK'],
-      ratings: ['1', '2', '3', '4', '5'],
-      relationships: [
+      city_enum: ['Jhang', 'Faisalabad', 'Lahore', 'Islamabad'],
+      class_enum: ['5th', '8th', '9th', '10th', '11th', '12th', 'Other'],
+      gender_enum: ['Male', 'Female'],
+      province_enum: ['Punjab', 'Sindh', 'Balochistan', 'KPK'],
+      ratings_enum: ['1', '2', '3', '4', '5'],
+      relationship_enum: [
         'Father',
         'Mother',
-        'Grand Father',
-        'Grand Mother',
+        'GrandFather',
+        'GrandMother',
         'Uncle',
         'Aunt',
         'Brother',
         'Sister',
-        'Cousin',
         'Other'
       ],
-      subject_groups: [
-        'Science',
-        'Arts',
-        'Pre-Medical',
-        'Pre-Engineering',
-        'Computer Science (ICS)',
-        'Commerce (I.Com)',
-        'Diploma (Any Field)'
+      subject_group_enum: [
+        'Science (Biology)',
+        'Science (Computer)',
+        'FSc. (Pre-Medical)',
+        'FSc. (Pre-Engineering)',
+        'ICS (Computer Science)',
+        'I.Com (Commerce)',
+        'F.A. (Arts)',
+        'Diploma'
       ]
     }
   }

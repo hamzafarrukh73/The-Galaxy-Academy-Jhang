@@ -18,7 +18,7 @@ const profileMenu = computed<DropdownMenuItem[]>(() => {
     { type: 'separator' },
     {
       icon: ICONS.nav.user,
-      label: 'Manage Account',
+      label: 'Edit Profile',
       to: URLS.dashboard.personal
     }, {
       icon: ICONS.action.exit,

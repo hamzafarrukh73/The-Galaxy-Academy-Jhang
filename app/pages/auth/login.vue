@@ -23,14 +23,14 @@ const fields: AuthFormField[] = [{
   required: true
 }]
 
-const providers = [{
-  label: 'Google',
-  icon: 'i-simple-icons-google',
-  onClick: () => authStore.socialGoogleLogin()
-}]
+// const providers = [{
+//   label: 'Google',
+//   icon: 'i-simple-icons-google',
+//   onClick: () => authStore.socialGoogleLogin()
+// }]
 
 const schema = z.object({
-  email: z.string().email('Invalid email'),
+  email: z.email('Invalid email'),
   password: z.string().min(8, 'Must be at least 8 characters')
 })
 
@@ -47,7 +47,6 @@ function onSubmit(payload: FormSubmitEvent<Schema>) {
       <UAuthForm
         :schema="schema"
         :fields="fields"
-        :providers="providers"
         title="Login"
         :icon="ICONS.nav.user"
         :loading="layoutStore.isLoading"
