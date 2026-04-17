@@ -88,7 +88,7 @@ onMounted(() => {
           </div>
         </div>
 
-        <div class="flex flex-col grow items-start justify-between w-full">
+        <div class="flex flex-col grow items-start justify-between gap-4 w-full">
           <UPageFeature
             :title="fullName"
             :description="`ID: ${studentId}`"
