@@ -20,7 +20,7 @@ export class GenericAPI<T extends keyof Tables> extends BaseRepository {
    */
   async get(id: string | number): Promise<Tables[T]['Row'] | null> {
     return await this.request<Tables[T]['Row']>(
-      this.query.select('*').eq('id', id as never).maybeSingle()
+      this.query.select('*').eq('id' as never, id as never).maybeSingle()
     )
   }
 
@@ -81,7 +81,7 @@ export class GenericAPI<T extends keyof Tables> extends BaseRepository {
    */
   async update(id: string | number, data: Tables[T]['Update']): Promise<Tables[T]['Row']> {
     return await this.request<Tables[T]['Row']>(
-      this.query.update(data as never).eq('id', id as never).select().single()
+      this.query.update(data as never).eq('id' as never, id as never).select().single()
     )
   }
 
@@ -90,7 +90,7 @@ export class GenericAPI<T extends keyof Tables> extends BaseRepository {
    */
   async delete(id: string | number): Promise<void> {
     await this.request(
-      this.query.delete().eq('id', id as never)
+      this.query.delete().eq('id' as never, id as never)
     )
   }
 
