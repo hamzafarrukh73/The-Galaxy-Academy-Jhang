@@ -67,7 +67,10 @@ const profileMenu = computed<DropdownMenuItem[]>(() => {
         :avatar="{
           src: usersStore.displayAvatarUrl || '',
           icon: ICONS.nav.user,
-          loading: 'lazy'
+          loading: 'lazy',
+          ui: {
+            image: 'object-fit'
+          }
         }"
         orientation="horizontal"
         size="3xl"
