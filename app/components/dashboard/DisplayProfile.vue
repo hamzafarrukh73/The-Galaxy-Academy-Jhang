@@ -34,7 +34,8 @@ onMounted(() => {
           :icon="ICONS.nav.user"
           class="size-[full] max-w-full aspect-square border-2 p-1"
           :ui="{
-            root: 'object-fit'
+            root: 'object-cover',
+            image: 'object-fit'
           }"
         />
 
